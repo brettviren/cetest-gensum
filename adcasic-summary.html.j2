@@ -1,0 +1,50 @@
+{% include 'header.html.j2' %}
+
+<h1>ADC ASIC Test Category Summary</h1>
+
+<script type="text/javascript" class="init">
+  $(document).ready(function() {
+  $('#example').DataTable();
+  } );
+  </script>
+
+<table id="example" class="display" width="100%" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Pass</th>
+      <th>Serial</th>
+      <th>Board</th>
+      <th>Timestamp</th>
+      <th>Host</th>
+      <th>Version</th>
+      <th>Config</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for one in adcasic -%}
+    <tr>
+      <td>{{ one.pass }}</td>  
+      <td><a href="adcasic-{{ one.serial }}.html">{{ one.serial }}</a></td>  
+      <td>{{ one.board_id }}</td>  
+      <td><a href="adcTest_{{ one.timestamp }}_{{ one.serial }}-sample.html">{{ one.timestamp }}</a></td>  
+      <td>{{ one.hostname }}</td>  
+      <td>{{ one.version }}</td>
+      <td>{{ one.femb_config }}</td>  
+    </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <th>Pass</th>
+      <th>Serial</th>
+      <th>Board</th>
+      <th>Timestamp</th>
+      <th>Host</th>
+      <th>Version</th>
+      <th>Config</th>
+    </tr>
+  </tfoot>
+</table>
+
+{% include 'footer.html.j2' %}
+    

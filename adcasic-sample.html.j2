@@ -1,0 +1,13 @@
+{% include 'header.html.j2' %}
+
+<h1>ADC ASIC Summary Plots</h1>
+{% for one in adcasic -%}
+
+<h2>ADC ASIC SN# {{ one.serial }} tested on board {{ one.board_id }} on {{ one.timestamp }} </h2>
+
+{% for png in one.png -%}
+<img src="../data/{{one.reldir}}/{{ png }}"></img>
+{% endfor -%}
+{% endfor -%}
+{% include 'footer.html.j2' %}
+    

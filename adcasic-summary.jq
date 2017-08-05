@@ -1,0 +1,1 @@
+{ "adcasic":[.[] | .adcasic[0]]}

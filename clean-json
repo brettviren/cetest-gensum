@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+'''Sigh, some JSON files produed by femb_python are actually saved as
+Python string representation of the JSON text.  This requires a double
+decode to get data.  This filter tryies to fix the problem.  If it
+fails it falls back to pass-through.
+'''
+
+# fixme: this code is super dumb
+
+import json
+import sys
+infile=sys.argv[1]
+dat = open(infile).read()
+for n in range(3):
+    dat = json.loads(dat)
+    if type(dat) == dict:
+        sys.stdout.write(json.dumps(dat))
+        sys.exit(0)
+# default to pass through
+sys.stdout.write(json.dumps(dat))
