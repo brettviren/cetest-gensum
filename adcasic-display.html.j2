@@ -1,0 +1,9 @@
+{% include 'header.html.j2' %}
+
+{% for one in adcasic %}
+{% for png in one.png %}
+<img src="../summary-data/{{one.reldir}}/{{ png }}"></img>
+{% endfor %}
+{% endfor %}
+{% include 'footer.html.j2' %}
+    
