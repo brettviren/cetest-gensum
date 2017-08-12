@@ -1,5 +1,9 @@
 from util import *
 
+import smtdb
+smt_labels = smtdb.slurp_adc_labels()
+
+
 #
 # The ADC ASIC taxon
 #
@@ -15,7 +19,9 @@ def builder(bld, seed_node, **params):
         bid=None
     sn = str(jparam['serials'][0])
     ts = str(jparam['timestamp'])
-    
+
+    label = smt_labels.get(ts, None)
+
     png_nodes = seed_node.parent.ant_glob("*.png")
 
     ident = '-'.join([sn,ts])
@@ -31,7 +37,9 @@ def builder(bld, seed_node, **params):
 
     bld(rule="${JQ} -s -f ${SRC} > ${TGT}",
         source=[jq_node, seed_node], target=[json_node])
-    bld(rule="${YASHA} -I.. -o ${TGT[0]} -v reltoroot %s -V ${SRC[1]} ${SRC[0]}" % reltoroot,
+    extra = " -v reltoroot %s " % reltoroot
+    extra+= " -v label '%s'" % label
+    bld(rule="${YASHA} -I.. -o ${TGT[0]} %s -V ${SRC[1]} ${SRC[0]}" % extra,
         source=[j2_node, json_node], target=[html_node])
 
 

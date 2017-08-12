@@ -50,7 +50,6 @@ taxa = [
 # Note, products in *id taxa depend on produts of the previous.
 
 import os
-
 from collections import defaultdict
 
 def options(opt):
@@ -71,7 +70,6 @@ def build(bld):
 
     for taxon in taxa:
         mod = importlib.import_module("taxon.%s" % taxon)
-
 
         print ("Building for %s" % taxon)
 
