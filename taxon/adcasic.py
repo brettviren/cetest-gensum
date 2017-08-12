@@ -3,10 +3,10 @@ from util import *
 #
 # The ADC ASIC taxon
 #
-def seed_adcasic(bld, **params):
+def seeder(bld, **params):
     return dataroot(bld).ant_glob("*/dsk/*/oper/adcasic/*/*/adcTest_*.json")
 
-def build_adcasic(bld, seed_node, **params):
+def builder(bld, seed_node, **params):
     # sus out the seed to find what taxa instance products to build 
     pnode = seed_node.parent.find_node("params.json")
     jparam = json.loads(pnode.read())

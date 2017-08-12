@@ -3,11 +3,11 @@ from util import *
 #
 # The FEMB taxon
 #
-def seed_femb(bld, **params):
+def seeder(bld, **params):
     return dataroot(bld).ant_glob("*/dsk/*/oper/femb/*/*/fembTest_powercycle_test/params.json")
 
 
-def build_femb(bld, seed_node, **params):
+def builder(bld, seed_node, **params):
     basedir = seed_node.parent.parent
 
     result_nodes = basedir.ant_glob("*/*-results.json")

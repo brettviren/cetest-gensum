@@ -3,10 +3,10 @@ from util import *
 #
 # The FE ASIC taxon
 #
-def seed_feasic(bld, **params):
+def seeder(bld, **params):
     return dataroot(bld).ant_glob("*/dsk/*/oper/feasic/*/*/check_setup/params.json")
 
-def build_feasic(bld, seed_node, **params):
+def builder(bld, seed_node, **params):
     basedir=seed_node.parent.parent
     result_nodes = basedir.ant_glob("*/*-results.json")
     if not result_nodes:
