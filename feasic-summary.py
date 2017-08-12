@@ -7,7 +7,7 @@
 This script produces the missing summary 
 '''
 
-# /dsk/1/data/sync-json/hothdaq2/dsk/1/oper/feasic/quadFeAsic/20170804T224053
+# /dsk/1/data/sync-json/hothdaq2/dsk/1/oper/feasic/quadFeAsic/20170804T224053/check_setup/params.json
 
 import os
 import sys
@@ -15,80 +15,38 @@ import json
 from glob import glob
 from collections import Counter
 
-def loads_result(resultfile):
+def load_maybe_broken_json(filename):
     '''Load result file, possibly as fscked up JSON.
     '''
-    dat = open(resultfile).read()
+    dat = open(filename).read()
     for n in range(3):
         dat = json.loads(dat)
         if type(dat) == dict:
             return dat
     raise ValueError("Could not load result file %s" % resultfile)
 
-def results_summary(par, res):
+def slurp_from_seed(check_setup_params_json):
+    '''Surp a result starting with the check_setup/params.json file.
+    Return big dict keyed by data subdir name.
+
     '''
-    Return dictionary of ASIC SN -> pass
-    '''
-    asic_ok = dict()
-    for r in res['results']:
-        try:
-            asicn = int(r['asic'])
-        except KeyError:
-            continue
-        sn = par["asic%did"%asicn]
-        fail = int(r["fail"])
-        asic_ok[sn] = not fail
-    return asic_ok
-        
-def slurp_directory(dirname):
-    '''Surp in a directory looking for result files.  Return dict mapping
-    sub dir to a pair of (parameters, results).
-    '''
-    dirname = os.path.realpath(dirname)
+    seed = os.path.realpath(check_setup_params_json)
+    resdir = os.path.dirname(os.path.dirname(seed))
 
     ret = dict()
 
-    # use the check_setup params to snarf some general info
-    cspar = json.loads(open(os.path.join(dirname, "check_setup", "params.json")).read())
-    ret["datadir"] = os.path.dirname(cspar["datadir"])
-    ret["femb_config"] = cspar["femb_config"]
-    ret["femb_version"] = cspar["femb_python_location"][29:].split("/")[0]
-    ret["hostname"] = cspar['hostname']
-    ret["timestmp"] = cspar['session_start_time']
+    for parfile in glob(os.path.join(resdir, "*/params.json")):
+        pardat = json.load(open(parfile))
+        dsd = pardat['datasubdir']
+        resdat = dict()
+        for resfile in glob(parfile.replace("params.json","*-results.json")):
+            resdat = load_maybe_broken_json(resfile)
+            break;              # should only be one....
+        ret[dsd] = dict(params=pardat, results=resdat)
 
-    asic_pass = Counter();
-    asic_fail = Counter()
-    # now go after per test summaries
-    for resfile in glob("%s/*/*-results.json" % dirname):
-        resdir = os.path.dirname(resfile)
-        subdir = os.path.basename(resdir)
-
-        resdat = loads_result(resfile)
-        pardat = json.loads(open(os.path.join(resdir,"params.json")).read())
-        
-        pf = results_summary(pardat, resdat)
-        for aid,res in pf.items():
-            if res:
-                asic_pass[aid] += 1
-            else:
-                asic_fail[aid] += 1
-
-        thisres = dict (
-            png = os.path.basename(resfile).replace("-results.json","summaryPlot.png"),
-            result = pf,
-            subdir = subdir,
-            test_type = resdat["type"],
-            config_base = resdat["config_base"],
-            config_gain = resdat['config_gain'],
-            config_shape = resdat['config_shape'] 
-        )
-        ret[subdir] = thisres
-    ret["passing"] = asic_pass
-    ret["failing"] = asic_fail
-
-    return ret
+    return dict(feasic=ret)
 
 if '__main__' == __name__:
-    dat = slurp_directory(sys.argv[1])
-    sys.stdout.write(json.dumps(dat))
+    dat = slurp_from_seed(sys.argv[1])
+    sys.stdout.write(json.dumps(dat, indent=4))
     
