@@ -1,0 +1,43 @@
+{% include 'header.html.j2' %}
+    
+
+<script type="text/javascript" class="init">
+  $(document).ready(function() {
+  $('#summary').DataTable();
+  } );
+  </script>
+
+<h1>Summary of ADC ASIC Test for sn# {{ adcasic.serial }} on {{ adcasic.timestamp }}</h1>
+
+<!-- fixme: most of these should be made links to other things -->
+
+<h2>Summary information</h2>
+
+<table id="summary" class="display" width="50%" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Passed</td><td>{{ adcasic.pass }}</td></tr>
+    <tr><td>ADC ASIC sn#</td><td>{{ adcasic.serial }}</td></tr>
+    <tr><td>Timestamp</td><td>{{ adcasic.timestamp }}</td></tr>
+    <tr><td>Test board</td><td>{{ adcasic.board_id }}</td></tr>
+    <tr><td>DAQ host</td><td>{{ adcasic.hostname }}</td></tr>
+    <tr><td>DAQ version</td><td>{{ adcasic.version }}</td></tr>
+    <tr><td>DAQ Config</td><td>{{ adcasic.femb_config }}</td></tr>
+  </tbody>
+</table>
+
+<h2>Summary Plots</h2>
+
+{% for png in adcasic.png -%}
+<h3>{{ png }}</h3>
+<img src="{{ png }}">
+{% endfor -%}
+
+
+{% include 'footer.html.j2' %}
+    

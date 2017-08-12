@@ -9,12 +9,16 @@ fails it falls back to pass-through.
 
 import json
 import sys
-infile=sys.argv[1]
-dat = open(infile).read()
-for n in range(3):
-    dat = json.loads(dat)
-    if type(dat) == dict:
-        sys.stdout.write(json.dumps(dat))
-        sys.exit(0)
-# default to pass through
-sys.stdout.write(json.dumps(dat))
+
+def dump_one(fname):
+    dat = open(infile).read()
+    for n in range(3):
+        dat = json.loads(dat)
+        if type(dat) == dict:
+            sys.stdout.write(json.dumps(dat))
+            return 
+    sys.stdout.write(dat)       # default to passthrough
+
+for infile in sys.argv[1:]:
+    dump_one(infile)
+

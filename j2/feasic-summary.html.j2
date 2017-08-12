@@ -1,0 +1,58 @@
+{% include 'header.html.j2' %}
+    
+<script type="text/javascript" class="init">
+  $(document).ready(function() {
+  $('#summary').DataTable();
+  } );
+  </script>
+
+<h1>Summary of FE ASIC Test on board# {{ board_id }} on {{ timestamp }}</h1>
+
+<!-- fixme: most of these should be made links to other things -->
+
+<h2>Summary information</h2>
+
+FE ASIC IDs:
+<ol>
+  <li>{{ feasic0 }}</li>
+  <li>{{ feasic1 }}</li>
+  <li>{{ feasic2 }}</li>
+  <li>{{ feasic3 }}</li>
+</ol>
+
+<h2>Test results</h2>
+
+<table id="summary" class="display" width="50%" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Test Name</th>
+      <th>gain</th>
+      <th>shape</th>
+      <th>base</th>
+      <th>FE# {{ feasic0 }}</th>
+      <th>FE# {{ feasic1 }}</th>
+      <th>FE# {{ feasic2 }}</th>
+      <th>FE# {{ feasic3 }}</th>
+      <th>ALL</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for one in feasic -%}
+    <tr>
+      <td><a href="{{ one.png }}">{{ one.type }}</a></td>
+      <td>{{ one.gain }}</td>
+      <td>{{ one.shape }}</td>
+      <td>{{ one.base }}</td>
+      <td>{{ one.passed[0] }}</td>
+      <td>{{ one.passed[1] }}</td>
+      <td>{{ one.passed[2] }}</td>
+      <td>{{ one.passed[3] }}</td>
+      <td>{{ one.passed[0] and one.passed[1] and one.passed[2] and one.passed[3] }}</td>
+    </tr>
+{% endfor -%}
+  </tbody>
+</table>
+
+
+{% include 'footer.html.j2' %}
+    
