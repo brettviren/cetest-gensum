@@ -1,0 +1,51 @@
+{% include 'header.html.j2' %}
+    
+<script type="text/javascript" class="init">
+  $(document).ready(function() {
+  $('#summary').DataTable();
+  } );
+  </script>
+
+{% set base = femb.fembTest_powercycle_test.params -%}
+
+<h1>Summary of FEMB Test on box:{{ base.box_ids[0] }} fm:{{ base.fm_ids[0] }} am:{{ base.am_ids[0] }} at {{ base.session_start_time }}</h1>
+
+<!-- fixme: most of these should be made links to other things -->
+
+<h2>Summary</h2>
+
+<ul>
+<li>ADC ASICSs: {% for adc in base.adc_asics[0] -%}{{ adc }} {%endfor-%}</li>
+<li>FE ASICSs: {% for fe in base.fe_asics[0] -%}{{ fe }} {%endfor-%}</li>
+
+
+<h2>Test results</h2>
+
+<table id="summary" class="display" width="50%" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Test Name</th>
+      <th>ASIC failure</th>
+      <th>Chan failure</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for name, dat in femb.items() -%}
+{% set par = dat.params -%}
+{% for res in dat.results -%}
+{% if res.results_summary -%}
+{%   set rs = res.results_summary -%}
+    <tr>
+      <td><a href="{{ par.outlabel }}-summaryPlot.png">{{ par.outlabel }}</a></td>
+      <td>{{ rs.asic_fail }}</td>
+      <td>{{ rs.chan_fail }}</td>
+    </tr>
+{%   endif -%}
+{% endfor -%}
+{% endfor -%}
+  </tbody>
+</table>
+
+
+{% include 'footer.html.j2' %}
+    
