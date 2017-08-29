@@ -10,7 +10,10 @@
 <h1>Summary of ADC ASIC Test for sn# {{ adcasic.serial }} on {{ adcasic.timestamp }}</h1>
 
 <!-- fixme: most of these should be made links to other things -->
-<a href="http://localhost:8942/adc/{{ label }}/">Sumatra link</a>.
+<ul>
+  <li><a href="http://localhost:8942/adc/{{ label }}/">Sumatra link</a></li>
+  <li><a href="{{ reltoroot }}/adcid/{{ adcasic.serial }}/">All results for ADC {{ adcasic.serial }}</a></li>
+</ul>
 
 <h2>Summary information</h2>
 

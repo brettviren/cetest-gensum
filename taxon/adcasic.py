@@ -8,7 +8,10 @@ smt_labels = smtdb.slurp_adc_labels()
 # The ADC ASIC taxon
 #
 def seeder(bld, **params):
-    return dataroot(bld).ant_glob("*/dsk/*/oper/adcasic/*/*/adcTest_*.json")
+    ret = dataroot(bld).ant_glob("*/dsk/*/oper/adcasic/*/*/adcTest_*.json")
+    print "#adcasic:\t%d" % len(ret)
+    return ret
+
 
 def builder(bld, seed_node, **params):
     # sus out the seed to find what taxa instance products to build 

@@ -1,0 +1,39 @@
+{% include 'header.html.j2' %}
+    
+<script type="text/javascript" class="init">
+  $(document).ready(function() {
+  $('#summary').DataTable();
+  } );
+  </script>
+
+<h1>All results for ADC ID {{ adcid.ident }}</h1>
+
+<table id="summary" class="display" width="50%" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Board ID</th>
+      <th>timestamp</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for one in adcid.adcasic -%}
+    <tr>
+      <td>adcasic</td>
+      <td>{{ one.board_id }}</td>
+      <td><a href="{{ reltotop }}/adcasic/{{ one.path }}">{{ one.timestamp }}</a></td>
+    </tr>
+    {% endfor -%}
+
+    {% for one in adcid.femb -%}
+    <tr>
+      <td>femb</td>
+      <td>{{ one.board_id }}</td>
+      <td><a href="{{ reltoroot }}/femb/{{ one.path }}">{{ one.timestamp }}</a></td>
+    </tr>
+    {% endfor -%}
+  </tbody>
+</table>
+
+{% include 'footer.html.j2' %}
+    

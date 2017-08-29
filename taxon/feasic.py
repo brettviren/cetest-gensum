@@ -1,10 +1,17 @@
 from util import *
 
+import smtdb
+smt_labels = smtdb.slurp_fe_labels()
+
+
 #
 # The FE ASIC taxon
 #
 def seeder(bld, **params):
-    return dataroot(bld).ant_glob("*/dsk/*/oper/feasic/*/*/check_setup/params.json")
+    ret = dataroot(bld).ant_glob("*/dsk/*/oper/feasic/*/*/check_setup/params.json")
+    print "#feasic:\t%d" % len(ret)
+    return ret
+    
 
 def builder(bld, seed_node, **params):
     basedir=seed_node.parent.parent
@@ -28,7 +35,11 @@ def builder(bld, seed_node, **params):
     subdir = install_path(taxon, "board"+bid, ts)
     reltoroot = '/'.join(['..']*len(subdir.split('/')))
 
-    bld(rule="${YASHA} -I.. -o ${TGT[0]} -v reltoroot %s -V ${SRC[1]} ${SRC[0]}" % reltoroot,
+    label = smt_labels.get(ts, None)
+
+    extra = " -v reltoroot %s " % reltoroot
+    extra+= " -v label '%s'" % label
+    bld(rule="${YASHA} -I.. -o ${TGT[0]} %s -V ${SRC[1]} ${SRC[0]}" % extra,
         source=[j2_node, json_node], target=[html_node])
         
     out = os.path.join("${PREFIX}", subdir)

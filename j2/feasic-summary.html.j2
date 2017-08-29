@@ -8,9 +8,14 @@
 
 {% set base = feasic.check_setup.params -%}
 
-<h1>Summary of FE ASIC Test on board# {{ board_id }} on {{ timestamp }}</h1>
+<h1>Summary of FE ASIC Test on board# {{ base.boardid }} on {{ base.timestamp }}</h1>
 
 <!-- fixme: most of these should be made links to other things -->
+<ul>
+  <li><a href="http://localhost:8942/feasic/{{ label }}/">Sumatra link</a></li>
+  <li>FE ASICSs: {% for fe in [base.asic0id, base.asic1id, base.asic2id, base.asic3id] -%}<a href="{{ reltoroot }}/feid/{{fe }}/">{{ fe }}</a> {%endfor-%}</li>
+
+</ul>
 
 <h2>Test results</h2>
 

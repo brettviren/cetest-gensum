@@ -40,8 +40,8 @@ taxa = [
     "adcasic",                  # a sample result of the ADC ASIC test
     "feasic",                   # a sample result of the FE ASIC test
     "femb",                     # a sample result of the FEMB test
-#    "adcid",                    # collect on ADC ASIC ident
-#    "feid",                     # collect on FE ASIC ident
+    "adcid",                    # collect on ADC ASIC ident
+    "feid",                     # collect on FE ASIC ident
 #    "fembid",                   # collect on FEMB iden
 #    "adcasicbid",               # collect on ADC ASIC test board ident
 #    "feasicbid",                # collect on FE ASIC test board ident

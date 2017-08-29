@@ -41,6 +41,30 @@ CAST(django_store_parameterset.content AS JSON)->>'smtname' = 'adc';
         ret[ts] = lab
     return ret
 
+def slurp_fe_labels():
+    select="""
+SELECT
+django_store_record.label,
+(django_store_parameterset.content::json)->'session_start_time'
+FROM
+django_store_parameterset, django_store_record
+WHERE
+(django_store_parameterset.content::json)->'session_start_time' is not null 
+AND 
+(django_store_parameterset.content::json)->'smtname' is not null 
+AND
+django_store_parameterset.id = django_store_record.parameters_id 
+AND
+CAST(django_store_parameterset.content AS JSON)->>'smtname' = 'feasic';
+"""
+    cur = conn.cursor()    
+    cur.execute(select)
+    rows = cur.fetchall()
+    ret = dict()
+    for lab,ts in rows:
+        ret[ts] = lab
+    return ret
+
 def slurp_labels():
     '''
     Return a lookup from  Sumatra labels for data sets with matching params

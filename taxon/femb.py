@@ -20,6 +20,9 @@ def builder(bld, seed_node, **params):
     png_nodes = basedir.ant_glob("*/*.png")
     if not png_nodes:
         print "Got no PNGs from %s" % basedir
+    pdf_nodes = basedir.ant_glob("*/*.pdf")
+    if not pdf_nodes:
+        print "Got no PDFs from %s" % basedir
         
 
     jparam = json.loads(seed_node.read())
@@ -27,6 +30,10 @@ def builder(bld, seed_node, **params):
     # Some entries have garbage JSON
     for maybe_garbage in ["adc_asics","fe_asics"]:
         val = jparam[maybe_garbage];
+        try:
+            stuff = val[0][0]
+        except IndexError:
+            return
         if ',' in val[0][0]:
             val[0] = map(str, val[0][0].split(','))
 
@@ -52,8 +59,6 @@ def builder(bld, seed_node, **params):
     json_node = prod_file(bld, taxon, ident, format='json')
     html_node = prod_file(bld, taxon, ident, format='html')
 
-    png_nodes = basedir.ant_glob("*/*.png")
-    
     injester = bld.path.find_resource("femb-summary.py")
     bld(rule="${SRC[0]} ${SRC[1]} > ${TGT}",
         source=[injester, seed_node], target=[json_node])
@@ -67,9 +72,12 @@ def builder(bld, seed_node, **params):
     out = os.path.join("${PREFIX}", subdir)
     bld.install_as(os.path.join(out, "index.html"), html_node)
 
-    png_nodes = basedir.ant_glob("*/*.png")
-    if png_nodes:
-        bld.install_files(out, png_nodes)
+    # PNG and PDF files are not uniquely named.  This code coludes with femb-summary.py
+    for node in png_nodes + pdf_nodes:
+        path = node.abspath().split('/')
+        name = '_'.join(path[-2:])
+        bld.install_as(os.path.join(out, name), node);
+
 
     return dict(ident=ident, serial=bid, adcids=adcids, feids=feids, timestamp=ts, board_id=bid, 
                 json_node = json_node, html_node=html_node, png_nodes = png_nodes,

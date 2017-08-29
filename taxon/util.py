@@ -16,7 +16,11 @@ def dataroot(bld):
 
 # enforce some naming conventions of our source files
 def j2_file(bld, taxon, scheme='summary', format = "html.j2"):
-    return bld.path.find_resource("j2/{taxon}-{scheme}.{format}".format(**locals()))
+    name = "j2/{taxon}-{scheme}.{format}".format(**locals())
+    node = bld.path.find_resource(name)
+    if not node:
+        raise ValueError("Failed to find: %s" % name)
+    return node
 def jq_file(bld, taxon, scheme='summary', format = "jq"):
     return bld.path.find_resource("jq/{taxon}-{scheme}.{format}".format(**locals()))
 

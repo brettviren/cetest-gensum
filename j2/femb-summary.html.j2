@@ -15,9 +15,13 @@
 <h2>Summary</h2>
 
 <ul>
-<li>ADC ASICSs: {% for adc in base.adc_asics[0] -%}{{ adc }} {%endfor-%}</li>
-<li>FE ASICSs: {% for fe in base.fe_asics[0] -%}{{ fe }} {%endfor-%}</li>
+<li>ADC ASICSs: {% for adc in base.adc_asics[0] -%}<a href="{{ reltoroot }}/adcid/{{ adc }}/">{{ adc }}</a> {%endfor-%}</li>
+<li>FE ASICSs: {% for fe in base.fe_asics[0] -%}<a href="{{ reltoroot }}/feid/{{fe }}/">{{ fe }}</a> {%endfor-%}</li>
+</ul>
 
+{% if femb.fembTest_summary -%}
+<a href="{{ femb.fembTest_summary.pdfs[0] }}">Summary sheet</a>
+{% endif -%}
 
 <h2>Test results</h2>
 
@@ -25,8 +29,13 @@
   <thead>
     <tr>
       <th>Test Name</th>
+      <th>gain</th>
+      <th>shape</th>
+      <th>base</th>
       <th>ASIC failure</th>
       <th>Chan failure</th>
+      <th>figs</th>
+
     </tr>
   </thead>
   <tbody>
@@ -36,9 +45,17 @@
 {% if res.results_summary -%}
 {%   set rs = res.results_summary -%}
     <tr>
-      <td><a href="{{ par.outlabel }}-summaryPlot.png">{{ par.outlabel }}</a></td>
+      <td>{{ par.outlabel[22:] }}</td>
+      <td>{{ par.gain }}</td>
+      <td>{{ par.shape }}</td>
+      <td>{{ par.base }}</td>
       <td>{{ rs.asic_fail }}</td>
       <td>{{ rs.chan_fail }}</td>
+      <td>
+	{% for png in dat.pngs -%}<a href="{{ png }}">PNG</a> {% endfor -%}
+	{% for pdf in dat.pdfs -%}<a href="{{ pdf }}">PDF</a> {% endfor -%}
+      </td>
+
     </tr>
 {%   endif -%}
 {% endfor -%}

@@ -1,19 +1,26 @@
 #
-# The ADC ID taxon collects info about each ADC ASIC ID.
+# The FE ID taxon collects info about each FE ASIC ID.
 #
 
 from util import *
 from collections import defaultdict
 
-taxon = "adcid"
+taxon = "feid"
 
 def seeder(bld, **params):
     ret = defaultdict(list)
-    for one in params["adcasic"]:
-        ret[one["serial"]].append(one["json_node"])
+    for one in params["feasic"]:
+        for onefeid in one['feids']:
+            if not onefeid:
+                onefeid = "NONE"
+            ret[onefeid].append(one["json_node"])
     for one in params["femb"]:
-        for serial in one["adcids"]:
-            ret[serial].append(one["json_node"])
+        for onefeid in one["feids"]:
+            if not onefeid:
+                onefeid = "NONE"
+                continue
+
+            ret[onefeid].append(one["json_node"])
     return ret.items()
 
 def builder(bld, seed, **params):
@@ -31,11 +38,11 @@ def builder(bld, seed, **params):
             cmd += " %s " % f
         return tsk.exec_command(cmd)
 
-    injester = bld.path.find_resource("adcid-summary.py")
+    injester = bld.path.find_resource("feid-summary.py")
     bld(rule=runner, source=[injester]+json_nodes, target=[json_node])
 
     reltoroot = '../..'
     bld(rule="${YASHA} -I.. -o ${TGT[0]} -v reltoroot %s -V ${SRC[1]} ${SRC[0]}" % reltoroot,
         source=[j2_node, json_node], target=[html_node])
 
-    bld.install_as("${PREFIX}/adcid/%s/index.html"%sn, html_node)
+    bld.install_as("${PREFIX}/feid/%s/index.html"%sn, html_node)

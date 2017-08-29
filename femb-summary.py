@@ -31,7 +31,7 @@ def fix_result(res):
             return res
 
         if ',' in val[0][0]:
-            val[0] = map(str, split(val[0][0],','))
+            val[0] = map(str, val[0][0].split(','))
     return res
 
 def summarize_result(res):
@@ -64,14 +64,17 @@ def slurp_from_seed(check_setup_params_json):
     ret = dict()
 
     for parfile in glob(os.path.join(resdir, "*/params.json")):
-        pardat = json.load(open(parfile))
+        pardat = fix_result(load_maybe_broken_json(parfile))
         dsd = pardat['datasubdir']
         resdat = list()
         for resfile in glob(parfile.replace("params.json","*-results.json")):
             one = summarize_result(fix_result(load_maybe_broken_json(resfile)))
             resdat.append(one)
+        sd = os.path.dirname(parfile)
+        pngs = ['_'.join(p.split("/")[-2:]) for p in glob(os.path.join(sd, "*.png"))]
+        pdfs = ['_'.join(p.split("/")[-2:]) for p in glob(os.path.join(sd, "*.pdf"))]
         #sys.stderr.write("%s: %s\n" % (dsd,len(resdat)))
-        ret[dsd] = dict(params=pardat, results=resdat)
+        ret[dsd] = dict(params=pardat, results=resdat, pngs=pngs, pdfs=pdfs)
 
     return dict(femb=ret)
 
