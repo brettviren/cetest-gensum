@@ -28,7 +28,7 @@ def builder(bld, seed_node, **params):
     for maybe_garbage in ["adc_asics","fe_asics"]:
         val = jparam[maybe_garbage];
         if ',' in val[0][0]:
-            val[0] = map(str, split(val[0][0],','))
+            val[0] = map(str, val[0][0].split(','))
 
     ts = str(jparam["session_start_time"])
 

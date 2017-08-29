@@ -37,8 +37,8 @@
 # The taxonmy includes
 
 taxa = [
-#    "adcasic",                  # a sample result of the ADC ASIC test
-#    "feasic",                   # a sample result of the FE ASIC test
+    "adcasic",                  # a sample result of the ADC ASIC test
+    "feasic",                   # a sample result of the FE ASIC test
     "femb",                     # a sample result of the FEMB test
 #    "adcid",                    # collect on ADC ASIC ident
 #    "feid",                     # collect on FE ASIC ident
@@ -78,5 +78,5 @@ def build(bld):
             if not dat:
                 continue
             taxa_dat[taxon].append(dat)
-            if count > 10:
-                break           # keep fast for testing
+            #if count > 10:
+            #    break           # keep fast for testing
