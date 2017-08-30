@@ -11,15 +11,11 @@ def seeder(bld, **params):
     ret = defaultdict(list)
     for one in params["feasic"]:
         for onefeid in one['feids']:
-            if not onefeid:
-                onefeid = "NONE"
+            onefeid = fix_asic_id(onefeid)
             ret[onefeid].append(one["json_node"])
     for one in params["femb"]:
         for onefeid in one["feids"]:
-            if not onefeid:
-                onefeid = "NONE"
-                continue
-
+            onefeid = fix_asic_id(onefeid)
             ret[onefeid].append(one["json_node"])
     return ret.items()
 
@@ -29,7 +25,7 @@ def builder(bld, seed, **params):
     # output nodes
     json_node = prod_file(bld, taxon, sn, format='json')
     html_node = prod_file(bld, taxon, sn, format='html')
-    j2_node = j2_file(bld, taxon, scheme="index")
+    j2_node = j2_file(bld, taxon, schema="summary")
 
     def runner(tsk):
         cmd = tsk.inputs[0].abspath() # the script
@@ -42,7 +38,7 @@ def builder(bld, seed, **params):
     bld(rule=runner, source=[injester]+json_nodes, target=[json_node])
 
     reltoroot = '../..'
-    bld(rule="${YASHA} -I.. -o ${TGT[0]} -v reltoroot %s -V ${SRC[1]} ${SRC[0]}" % reltoroot,
+    bld(rule="${YASHA} --no-extensions -I.. -o ${TGT[0]} -v reltoroot %s -V ${SRC[1]} ${SRC[0]}" % reltoroot,
         source=[j2_node, json_node], target=[html_node])
 
     bld.install_as("${PREFIX}/feid/%s/index.html"%sn, html_node)

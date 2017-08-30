@@ -1,0 +1,39 @@
+{% include 'header.html.j2' %}
+    
+
+<script type="text/javascript" class="init">
+  $(document).ready(function() {
+  $('#summary').DataTable();
+  } );
+  </script>
+
+<h1>All FE ASIC Test Result Summaries</h1>
+
+
+<table id="summary" class="display" width="100%" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Serial</th>
+      <th>Timestamp</th>
+      <th>Board</th>
+      <th>Config</th>
+      <th>DAQ pass</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for one in index %}
+    <tr>
+      <td><a href="{{ reltoroot }}/feid/{{ one.serial }}">{{ one.serial }}</a></td>
+      <td><a href="{{ reltoroot }}/feasic/board{{ one.board_id }}/{{ one.timestamp }}">{{ one.timestamp }}</a></td>
+      <td><a href="{{ reltoroot }}/feasic/board{{ one.board_id }}">{{ one.board_id }}</a></td>
+      <td>{{ one.femb_config }}</td>
+      <td>{{ one.pass }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+{% include 'footer.html.j2' %}
+    

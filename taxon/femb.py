@@ -24,7 +24,6 @@ def builder(bld, seed_node, **params):
     if not pdf_nodes:
         print "Got no PDFs from %s" % basedir
         
-
     jparam = json.loads(seed_node.read())
 
     # Some entries have garbage JSON
@@ -35,7 +34,8 @@ def builder(bld, seed_node, **params):
         except IndexError:
             return
         if ',' in val[0][0]:
-            val[0] = map(str, val[0][0].split(','))
+            val[0] = val[0][0].split(',')
+        val[0] = [fix_asic_id(a) for a in val[0]]
 
     ts = str(jparam["session_start_time"])
 
@@ -46,8 +46,8 @@ def builder(bld, seed_node, **params):
     ident = '-'.join([bid, ts])
 
     try:
-        adcids = [str(jparam["adc_asics"][0][ind]) for ind in range(8)]
-        feids =  [str(jparam[ "fe_asics"][0][ind]) for ind in range(8)]
+        adcids = [fix_asic_id(jparam["adc_asics"][0][ind]) for ind in range(8)]
+        feids =  [fix_asic_id(jparam[ "fe_asics"][0][ind]) for ind in range(8)]
     except IndexError:
         sys.stderr.write("Failed to get expected asics for %s:\nadc:%s\nfe:%s\n"% (seed_node.abspath(), jparam["adc_asics"], jparam["fe_asics"]))
         return
@@ -60,7 +60,7 @@ def builder(bld, seed_node, **params):
     html_node = prod_file(bld, taxon, ident, format='html')
 
     injester = bld.path.find_resource("femb-summary.py")
-    bld(rule="${SRC[0]} ${SRC[1]} > ${TGT}",
+    bld(rule="${SRC[0]} ${SRC[1]} ${TGT}",
         source=[injester, seed_node], target=[json_node])
 
     subdir = install_path(taxon, "femb-"+bid, ts)

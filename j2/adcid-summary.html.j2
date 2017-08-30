@@ -1,0 +1,53 @@
+{% include 'header.html.j2' %}
+    
+<script type="text/javascript" class="init">
+  $(document).ready(function() {
+  $('#summary').DataTable();
+  } );
+  </script>
+
+<h1>All test results involving ADC# {{ adcid.ident }}</h1>
+
+<h2>Notes</h2>
+
+The results table below includes all tests in which ADC# {{ adcid.ident }} participated.  The meaning of <b>Board ID</b> depends on the test:
+
+<ul>
+  <li><b>adcasic</b> the ADC ASIC test board ID</li>
+  <li><b>femb</b> the FE motherboard ID expressed as box#-fm#-am# (fm=FPGA mez., am=analogue mez)</li>  
+</ul>
+
+Board ID links go to a directory of all results in which that board
+particpated.  Timestamp links go to a specific result.
+
+<h2>Results</h2>
+
+<table id="summary" class="display" width="100%" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Test Type</th>
+      <th>Board ID</th>
+      <th>Timestamp</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for one in adcid.adcasic -%}
+    <tr>
+      <td>adcasic</td>
+      <td><a href="{{ reltoroot }}/adcbid/{{ one.board_id }}">{{ one.board_id }}</a></td>
+      <td><a href="{{ reltoroot }}/adcasic/{{ one.path }}">{{ one.timestamp }}</a></td>
+    </tr>
+    {% endfor -%}
+
+    {% for one in adcid.femb -%}
+    <tr>
+      <td>femb</td>
+      <td><a href="{{ reltoroot }}/femb/femb-{{ one.board_id }}">{{ one.board_id }}</a></td>
+      <td><a href="{{ reltoroot }}/femb/{{ one.path }}">{{ one.timestamp }}</a></td>
+    </tr>
+    {% endfor -%}
+  </tbody>
+</table>
+
+{% include 'footer.html.j2' %}
+    

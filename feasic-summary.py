@@ -48,5 +48,6 @@ def slurp_from_seed(check_setup_params_json):
 
 if '__main__' == __name__:
     dat = slurp_from_seed(sys.argv[1])
-    sys.stdout.write(json.dumps(dat, indent=4))
+    out = sys.argv[2]
+    open(out,'w').write(json.dumps(dat, indent=4))
     

@@ -42,6 +42,12 @@ taxa = [
     "femb",                     # a sample result of the FEMB test
     "adcid",                    # collect on ADC ASIC ident
     "feid",                     # collect on FE ASIC ident
+    "adcasicindex",             # make index of all adcasic results
+    "feasicindex",              # make index of all feasic results
+    "adcboard"                  # collect ADC ASIC test board ident
+#    "fembindex",                # make index of all femb results    
+#    "adcidindex",               # make index of all adcidasic results    
+#    "feidindex",                # make index of all feidasic results    
 #    "fembid",                   # collect on FEMB iden
 #    "adcasicbid",               # collect on ADC ASIC test board ident
 #    "feasicbid",                # collect on FE ASIC test board ident
@@ -78,5 +84,5 @@ def build(bld):
             if not dat:
                 continue
             taxa_dat[taxon].append(dat)
-            #if count > 10:
+            #if count > 100:
             #    break           # keep fast for testing

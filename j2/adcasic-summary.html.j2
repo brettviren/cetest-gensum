@@ -7,17 +7,18 @@
   } );
   </script>
 
-<h1>Summary of ADC ASIC Test for sn# {{ adcasic.serial }} on {{ adcasic.timestamp }}</h1>
+<h1>ADC ASIC Test Summary for ADC# {{ adcasic.serial }} sampled on {{ adcasic.timestamp }}</h1>
 
-<!-- fixme: most of these should be made links to other things -->
+
+<h2>Links</h2>
 <ul>
-  <li><a href="http://localhost:8942/adc/{{ label }}/">Sumatra link</a></li>
-  <li><a href="{{ reltoroot }}/adcid/{{ adcasic.serial }}/">All results for ADC {{ adcasic.serial }}</a></li>
+  <li><a href="{{ reltoroot }}/adcid/{{ adcasic.serial }}/">All results for ADC# {{ adcasic.serial }}</a></li>
+  <li><a href="http://localhost:8942/adc/{{ label }}/">Sumatra entry</a> (requires local Sumatra server or SSH tunnel)</li>
 </ul>
 
 <h2>Summary information</h2>
 
-<table id="summary" class="display" width="50%" cellspacing="0">
+<table id="summary" class="display" width="100%" cellspacing="0">
   <thead>
     <tr>
       <th>Parameter</th>
@@ -26,9 +27,9 @@
   </thead>
   <tbody>
     <tr><td>Passed</td><td>{{ adcasic.pass }}</td></tr>
-    <tr><td>ADC ASIC sn#</td><td>{{ adcasic.serial }}</td></tr>
+    <tr><td>ADC ASIC sn#</td><td><a href="{{ reltoroot }}/adcid/{{ adcasic.serial }}">{{ adcasic.serial }}</a></td></tr>
     <tr><td>Timestamp</td><td>{{ adcasic.timestamp }}</td></tr>
-    <tr><td>Test board</td><td>{{ adcasic.board_id }}</td></tr>
+    <tr><td>Test board</td><td><a href="{{ reltoroot }}/adcboard/{{ adcasic.board_id }}">{{ adcasic.board_id }}</a></td></tr>
     <tr><td>DAQ host</td><td>{{ adcasic.hostname }}</td></tr>
     <tr><td>DAQ version</td><td>{{ adcasic.version }}</td></tr>
     <tr><td>DAQ Config</td><td>{{ adcasic.femb_config }}</td></tr>

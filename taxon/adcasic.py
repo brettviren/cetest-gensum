@@ -17,10 +17,8 @@ def builder(bld, seed_node, **params):
     # sus out the seed to find what taxa instance products to build 
     pnode = seed_node.parent.find_node("params.json")
     jparam = json.loads(pnode.read())
-    bid = str(jparam['board_id'])
-    if bid.strip() in ["*","","-"]:
-        bid=None
-    sn = str(jparam['serials'][0])
+    bid = fix_board_id(jparam['board_id'])
+    sn = fix_asic_id(jparam['serials'][0])
     ts = str(jparam['timestamp'])
 
     label = smt_labels.get(ts, None)
@@ -42,7 +40,7 @@ def builder(bld, seed_node, **params):
         source=[jq_node, seed_node], target=[json_node])
     extra = " -v reltoroot %s " % reltoroot
     extra+= " -v label '%s'" % label
-    bld(rule="${YASHA} -I.. -o ${TGT[0]} %s -V ${SRC[1]} ${SRC[0]}" % extra,
+    bld(rule="${YASHA} --no-extensions -I.. -o ${TGT[0]} %s -V ${SRC[1]} ${SRC[0]}" % extra,
         source=[j2_node, json_node], target=[html_node])
 
 

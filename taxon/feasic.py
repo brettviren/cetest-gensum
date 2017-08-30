@@ -17,8 +17,8 @@ def builder(bld, seed_node, **params):
     basedir=seed_node.parent.parent
 
     jparam = json.loads(seed_node.read())
-    feids = [str(jparam["asic%did"%ind]) for ind in range(4)]
-    bid = str(jparam["boardid"])
+    feids = [fix_asic_id(jparam["asic%did"%ind]) for ind in range(4)]
+    bid = fix_board_id(jparam["boardid"])
     ts = str(jparam["session_start_time"])
     ident = '-'.join([bid, ts])
 
@@ -29,7 +29,7 @@ def builder(bld, seed_node, **params):
     html_node = prod_file(bld, taxon, ident, format='html')
 
     injester = bld.path.find_resource("feasic-summary.py")
-    bld(rule="${SRC[0]} ${SRC[1]} > ${TGT}",
+    bld(rule="${SRC[0]} ${SRC[1]} ${TGT}",
         source=[injester, seed_node], target=[json_node])
 
     subdir = install_path(taxon, "board"+bid, ts)
@@ -39,7 +39,7 @@ def builder(bld, seed_node, **params):
 
     extra = " -v reltoroot %s " % reltoroot
     extra+= " -v label '%s'" % label
-    bld(rule="${YASHA} -I.. -o ${TGT[0]} %s -V ${SRC[1]} ${SRC[0]}" % extra,
+    bld(rule="${YASHA} --no-extensions -I.. -o ${TGT[0]} %s -V ${SRC[1]} ${SRC[0]}" % extra,
         source=[j2_node, json_node], target=[html_node])
         
     out = os.path.join("${PREFIX}", subdir)

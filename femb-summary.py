@@ -12,6 +12,11 @@ import json
 from glob import glob
 from collections import Counter
 
+# evil:
+sys.path.insert(0, os.path.dirname(__file__))
+
+from taxon.util import *
+
 def load_maybe_broken_json(filename):
     '''Load result file, possibly as fscked up JSON.
     '''
@@ -31,7 +36,9 @@ def fix_result(res):
             return res
 
         if ',' in val[0][0]:
-            val[0] = map(str, val[0][0].split(','))
+            val[0] = val[0][0].split(',')
+        val[0] = [fix_asic_id(s) for s in val[0]]
+
     return res
 
 def summarize_result(res):
@@ -80,5 +87,6 @@ def slurp_from_seed(check_setup_params_json):
 
 if '__main__' == __name__:
     dat = slurp_from_seed(sys.argv[1])
-    sys.stdout.write(json.dumps(dat, indent=4))
+    out = sys.argv[2]
+    open(out,'w').write(json.dumps(dat, indent=4))
     

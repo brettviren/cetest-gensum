@@ -14,16 +14,40 @@ def install_path(taxon, serial, timestamp):
 def dataroot(bld):
     return bld.root.make_node(bld.options.data_root)
 
-# enforce some naming conventions of our source files
-def j2_file(bld, taxon, scheme='summary', format = "html.j2"):
-    name = "j2/{taxon}-{scheme}.{format}".format(**locals())
+
+def j2_file(bld, taxon, schema='summary', format = "html.j2"):
+    'enforce some naming conventions for j2 files'
+    name = "j2/{taxon}-{schema}.{format}".format(**locals())
     node = bld.path.find_resource(name)
     if not node:
         raise ValueError("Failed to find: %s" % name)
     return node
-def jq_file(bld, taxon, scheme='summary', format = "jq"):
-    return bld.path.find_resource("jq/{taxon}-{scheme}.{format}".format(**locals()))
+def jq_file(bld, taxon, schema='summary', format = "jq"):
+    'enforce some naming conventions for jq files'
+    return bld.path.find_resource("jq/{taxon}-{schema}.{format}".format(**locals()))
 
-# enforce naming convention for products
+
 def prod_file(bld, taxon, ident, schema='summary', format='json'):
+    'Enforce naming convention for products'
     return bld.path.find_or_declare(product_name.format(**locals()))
+
+
+def fix_board_id(thing):
+    'Try to unstupify board IDs'
+    bogus = "bogus"
+    thing = str(thing).strip().lower()
+    if not thing:
+        return bogus
+    if thing[0] in "*_-":
+        return bogus
+    return thing
+
+def fix_asic_id(thing):
+    'Try to unstupify ASIC IDs'
+    bogus = "bogus"
+    thing = str(thing).strip().upper()
+    if not thing:
+        return bogus
+    if thing[0] in "*_-":
+        return bogus
+    return thing
