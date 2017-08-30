@@ -44,7 +44,7 @@ def fix_board_id(thing):
 
 def fix_asic_id(thing):
     'Try to unstupify ASIC IDs'
-    bogus = "bogus"
+    bogus = "BOGUS"
     thing = str(thing).strip().upper()
     if not thing:
         return bogus
