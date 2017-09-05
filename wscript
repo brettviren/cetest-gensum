@@ -84,8 +84,8 @@ def build(bld):
             if not dat:
                 continue
             taxa_dat[taxon].append(dat)
-            if count > 100:
-                break           # keep fast for testing
+            #if count > 100:
+            #    break           # keep fast for testing
 
 
     j2_node = bld.path.find_resource("j2/top.html.j2")
