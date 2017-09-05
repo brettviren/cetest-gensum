@@ -1,0 +1,14 @@
+{% include 'header-plots.html.j2' %}
+
+<div id="container" style="width:100%; height:400px;"></div>
+  
+<script>
+  $(function () {
+    $.getJSON('testing-rate.json', function (plot) {
+      Highcharts.chart('container', plot);
+    });
+  });
+</script>
+  
+{% include 'footer.html.j2' %}
+    

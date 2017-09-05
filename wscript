@@ -84,5 +84,13 @@ def build(bld):
             if not dat:
                 continue
             taxa_dat[taxon].append(dat)
-            #if count > 100:
-            #    break           # keep fast for testing
+            if count > 100:
+                break           # keep fast for testing
+
+
+    j2_node = bld.path.find_resource("j2/top.html.j2")
+    html_node = bld.path.find_or_declare("top.html")
+    bld(rule="${YASHA} --no-extensions -I.. -o ${TGT[0]} ${SRC[0]}",
+        source=[j2_node], target=[html_node])
+    bld.install_as('${PREFIX}/index.html', html_node)
+

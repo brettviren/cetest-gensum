@@ -1,0 +1,33 @@
+{% include 'header.html.j2' %}
+    
+<h1>BNL Cold Electronics Testing Result Summaries</h1>
+
+Here you can find a sumary (of summaries) of the BNL cold electronics testing results.
+
+<h2>Summary Categories</h2>
+
+The summaries are organized into different views of the entire result set:
+
+<ul>
+  <li><a href="adcasic"><b>ADC ASIC</b></a> give results from the ADC ASIC test boards</li>
+  <li><a href="adcid"><b>ADC ID</b></a> give a view of the above on a per ADC ASIC serial number basis</li>
+  <li><a href="adcboard"><b>ADC Board</b></a> list tests as a function of board ID and revision number</li>
+  <li><a href="feasic"><b>FE ASIC</b></a> give results from the FE ASIC test boards</li>  
+  <li><a href="feid"><b>FE ID</b></a> give a view of the above on a per FE ASIC serial number basis</li>
+  <li><a href="femb"><b>FEMB</b></a> give results from the FEMB tests</li>  
+</ul>
+
+These links are also available form the header of each page.
+
+<h2>Testing Rate</h2>
+
+The rate of each type of test performed is summarized on a per day basis:
+
+<ul>
+  <li><a href="adcasic/testing-rate.html">ADC ASIC</a>
+  <li><a href="feasic/testing-rate.html">FE ASIC</a>
+  <li><a href="femb/testing-rate.html">FEMB</a>
+</ul>
+
+{% include 'footer.html.j2' %}
+    
