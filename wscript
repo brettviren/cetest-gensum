@@ -37,7 +37,7 @@
 # The taxonmy includes
 
 limit_count = None
-# limit_count = 100
+#limit_count = 100
 taxa = [
     "adcasic",                  # a sample result of the ADC ASIC test
     "feasic",                   # a sample result of the FE ASIC test
@@ -48,7 +48,6 @@ taxa = [
     "feasicindex",              # make index of all feasic results
     "fembindex",                # make index of all FEMB results
     "adcboard",                 # collect ADC ASIC test board ident
-    "fembindex",                # make index of all femb results    
 ]
 
 # Note, products in *id taxa depend on produts of the previous.

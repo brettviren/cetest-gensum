@@ -1,0 +1,38 @@
+{% include 'header-plots.html.j2' %}
+
+<h1>Number of ADC ASIC tests per day</h1>
+
+The plots below give the number of ADC ASIC tests per day in various
+categories.  They count tests performed which were successful enough
+to produce a main output summary file
+(<tt>adcTest_[timestamp].json</tt>).
+
+<h2>By warm/cold and DAQ host</h2>
+
+<h3>Warm</h2>
+
+<div id="byhothdaq-warm" style="width:100%; height:400px;"></div>
+
+<h3>Cold</h2>
+
+<div id="byhothdaq-cold" style="width:100%; height:400px;"></div>
+
+<h2>By <tt>femb_config</tt></h2>
+
+Note, the <tt>hothdaq</tt> label does not necessarily indicate which DAQ host was used.
+
+<div id="byfembconfig" style="width:100%; height:400px;"></div>
+  
+
+<script>
+  $(function () {
+    $.getJSON('testing-rate.json', function (plot) {
+      Highcharts.chart('byhothdaq-warm', plot.warm);
+      Highcharts.chart('byhothdaq-cold', plot.cold);
+      Highcharts.chart('byfembconfig', plot.config);
+    });
+  });
+</script>
+  
+{% include 'footer.html.j2' %}
+    

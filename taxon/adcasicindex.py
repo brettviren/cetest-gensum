@@ -37,7 +37,7 @@ def builder(bld, node_list, **params):
     html_node = prod_file(bld, taxon, 'index', schema='index', format='html')
 
     # testing rate summary
-    tr_j2_node = bld.path.find_resource('j2/testing-rate.html.j2')
+    tr_j2_node = bld.path.find_resource('j2/adc-testing-rate.html.j2')
     tr_cfg_node = bld.path.find_resource('adc-testing-rate-cfg.json')
     tr_json_node = prod_file(bld, taxon, 'testing-rate', schema='chart', format='json')
     tr_py_node = bld.path.find_resource('testing-rate.py')
