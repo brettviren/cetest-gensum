@@ -31,7 +31,7 @@ def indexer(tsk):
                          str(dat["fm_ids"][0]),
                          str(dat["am_ids"][0])])
         this['serial'] = this['board_id'] = bid
-        this['version'] = dat['femb_python_location'].split('/')[-2][13:]
+        this['version'] = dat['femb_python_location'].split('/')[-2][12:]
         this['timestamp'] =  dat['session_start_time']
         this['board_id'] = fix_board_id(this['board_id'])
         this['adc_asics'] = dat['adc_asics'][0] # warning, assumes just
