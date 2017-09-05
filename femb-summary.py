@@ -48,9 +48,8 @@ def summarize_result(res):
         return res
     asic_fail = 0
     chan_fail = 0
-    for one in results:
-        fail = one["fail"]=="1"
-        if not fail:
+    for one in results:         # count failures
+        if one["fail"] != "1":
             continue
         if one.has_key("asic"):
             asic_fail += 1

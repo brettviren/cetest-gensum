@@ -36,6 +36,8 @@
 
 # The taxonmy includes
 
+limit_count = None
+# limit_count = 100
 taxa = [
     "adcasic",                  # a sample result of the ADC ASIC test
     "feasic",                   # a sample result of the FE ASIC test
@@ -44,18 +46,15 @@ taxa = [
     "feid",                     # collect on FE ASIC ident
     "adcasicindex",             # make index of all adcasic results
     "feasicindex",              # make index of all feasic results
-    "adcboard"                  # collect ADC ASIC test board ident
-#    "fembindex",                # make index of all femb results    
-#    "adcidindex",               # make index of all adcidasic results    
-#    "feidindex",                # make index of all feidasic results    
-#    "fembid",                   # collect on FEMB iden
-#    "adcasicbid",               # collect on ADC ASIC test board ident
-#    "feasicbid",                # collect on FE ASIC test board ident
+    "fembindex",                # make index of all FEMB results
+    "adcboard",                 # collect ADC ASIC test board ident
+    "fembindex",                # make index of all femb results    
 ]
 
 # Note, products in *id taxa depend on produts of the previous.
 
 import os
+import time
 from collections import defaultdict
 
 def options(opt):
@@ -84,13 +83,13 @@ def build(bld):
             if not dat:
                 continue
             taxa_dat[taxon].append(dat)
-            #if count > 100:
-            #    break           # keep fast for testing
+            if limit_count and count > limit_count:
+                break           # keep fast for testing
 
 
     j2_node = bld.path.find_resource("j2/top.html.j2")
     html_node = bld.path.find_or_declare("top.html")
-    bld(rule="${YASHA} --no-extensions -I.. -o ${TGT[0]} ${SRC[0]}",
+    bld(rule="${YASHA} --no-extensions -I.. -v reltoroot . -v date_generated '%s' -o ${TGT[0]} ${SRC[0]}" % time.asctime(),
         source=[j2_node], target=[html_node])
     bld.install_as('${PREFIX}/index.html', html_node)
 

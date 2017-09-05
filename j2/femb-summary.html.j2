@@ -15,8 +15,8 @@
 <h2>Summary</h2>
 
 <ul>
-<li>ADC ASICSs: {% for adc in base.adc_asics[0] -%}<a href="{{ reltoroot }}/adcid/{{ adc }}/">{{ adc }}</a> {%endfor-%}</li>
-<li>FE ASICSs: {% for fe in base.fe_asics[0] -%}<a href="{{ reltoroot }}/feid/{{fe }}/">{{ fe }}</a> {%endfor-%}</li>
+<li>ADC ASICSs: {% for adc in base.adc_asics[0] -%}<a href="{{ reltoroot }}/adcid/{{ adc }}/">[{{ adc }}]</a> {%endfor-%}</li>
+<li>FE ASICSs: {% for fe in base.fe_asics[0] -%}<a href="{{ reltoroot }}/feid/{{fe }}/">[{{ fe }}]</a> {%endfor-%}</li>
 </ul>
 
 {% if femb.fembTest_summary -%}
