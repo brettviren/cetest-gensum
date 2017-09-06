@@ -7,19 +7,29 @@ categories.  They count tests performed which were successful enough
 to produce a main output summary file
 (<tt>adcTest_[timestamp].json</tt>).
 
-<h2>By warm/cold and DAQ host</h2>
 
-<h3>Warm</h2>
 
-<div id="byhothdaq-warm" style="width:100%; height:400px;"></div>
+<h2>Cold tests by host DAQ</h2>
 
-<h3>Cold</h2>
+Tests that were run at cryogenic temperature, separated by which "hothdaq" host DAQ computer was used.
 
 <div id="byhothdaq-cold" style="width:100%; height:400px;"></div>
 
-<h2>By <tt>femb_config</tt></h2>
+<h2>Warm tests by host DAQ</h2>
 
-Note, the <tt>hothdaq</tt> label does not necessarily indicate which DAQ host was used.
+Tests that were run at room temperature, separated by which "hothdaq" host DAQ computer was used.
+
+<div id="byhothdaq-warm" style="width:100%; height:400px;"></div>
+
+<h2>Cold tests by board</h2>
+
+Tests that were run at cryogenic temperature, separated by the test board ID.  The <tt>vN</tt> version string indicates the number of times the test board was serviced to replace a socket.
+
+<div id="byboardcold" style="width:100%; height:400px;"></div>
+
+<h2>Tests by <tt>femb_config</tt></h2>
+
+Separated by the underlying <tt>femb_config</tt> label.  Note, the <tt>hothdaq</tt> label does not necessarily indicate which DAQ host was used.
 
 <div id="byfembconfig" style="width:100%; height:400px;"></div>
   
@@ -27,8 +37,9 @@ Note, the <tt>hothdaq</tt> label does not necessarily indicate which DAQ host wa
 <script>
   $(function () {
     $.getJSON('testing-rate.json', function (plot) {
-      Highcharts.chart('byhothdaq-warm', plot.warm);
       Highcharts.chart('byhothdaq-cold', plot.cold);
+      Highcharts.chart('byhothdaq-warm', plot.warm);
+      Highcharts.chart('byboardcold', plot.board);
       Highcharts.chart('byfembconfig', plot.config);
     });
   });

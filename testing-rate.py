@@ -38,6 +38,21 @@ def histogram_byday_byhost(data, cold):
         ret[hostname][date] += 1
     return ret
 
+def histogram_byday_byboard(data, cold):
+    'Collate data by board version'
+    ret = defaultdict(Counter)
+    for one in data['index']:
+        cfgname = one['femb_config']
+        have_cold = "cold" in cfgname
+        if cold != have_cold:
+            continue
+
+        board_id = 'board'+one['board_id']
+        dt = dateutil.parser.parse(one['timestamp']) # eg "20170613T164258"
+        date = dt.date()
+        ret[board_id][date] += 1
+    return ret
+
 def hist2series(hist):
     'Convert to series data structure'
     ret = list()
@@ -58,10 +73,21 @@ def adc_plots(cfg, dat):
     hist_byfembconfig = histogram_byday(dat)
     hist_byhostwarm = histogram_byday_byhost(dat, cold=False)
     hist_byhostcold = histogram_byday_byhost(dat, cold=True)
+    hist_byboardcold = histogram_byday_byboard(dat, cold=True)
+
+    bhc_series = hist2series(hist_byhostcold)
+    #print 'byhostcold=\n%s\n' % str(bhc_series)
+
+    bbc_series = hist2series(hist_byboardcold)
+    #print 'byboardcold=\n%s\n' % str(bbc_series)
+
 
     return dict(warm = dict(cfg, series = hist2series(hist_byhostwarm)),
-                cold = dict(cfg, series = hist2series(hist_byhostcold)),
-                config = dict(cfg, series = hist2series(hist_byfembconfig)))
+                cold = dict(cfg, series = bhc_series),
+                board = dict(cfg, series = bbc_series),
+                config = dict(cfg, series = hist2series(hist_byfembconfig)),
+    )
+                
 
 
 def generic_plot(cfg, dat):

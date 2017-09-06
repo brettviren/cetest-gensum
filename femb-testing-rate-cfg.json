@@ -12,7 +12,7 @@
    },
    "series": [ ],
    "subtitle": {
-      "text": "Includes retests, failures and sucesses."
+      "text": "Counts completed tests, including retests."
    },
    "title": {
       "text": "FEMB tests per day"

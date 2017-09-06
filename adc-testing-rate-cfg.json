@@ -10,9 +10,12 @@
          }
       }
    },
+   "exporting": {
+       "enabled": true
+   },
    "series": [ ],
    "subtitle": {
-      "text": "Includes retests, failures and sucesses."
+      "text": "Counts completed tests, including retests."
    },
    "title": {
       "text": "ADC ASIC tests per day"
