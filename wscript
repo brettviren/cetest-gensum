@@ -64,7 +64,7 @@ def options(opt):
 def configure(cfg):
     cfg.find_program("jq",var="JQ",mandatory=True)
     cfg.find_program("yasha",var="YASHA",mandatory=True)
-
+    cfg.find_program("cege",var="CEGE",mandatory=True)
 
 import importlib
 

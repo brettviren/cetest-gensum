@@ -52,7 +52,6 @@ def builder(bld, node_list, **params):
     tr_j2_node = bld.path.find_resource('j2/testing-rate.html.j2')
     tr_cfg_node = bld.path.find_resource('femb-testing-rate-cfg.json')
     tr_json_node = prod_file(bld, taxon, 'testing-rate', schema='chart', format='json')
-    tr_py_node = bld.path.find_resource('testing-rate.py')
     tr_html_node = prod_file(bld, taxon, 'testing-rate', schema='chart', format='html')
 
     bld(rule=indexer, source=node_list, target=[json_node])
@@ -67,8 +66,8 @@ def builder(bld, node_list, **params):
 
     # The plot
     
-    bld(rule='${SRC} ${TGT}',
-        source=[tr_py_node, tr_cfg_node, json_node], target=[tr_json_node])
+    bld(rule='${CEGE} rates-chart-data -c femb -t ${SRC[0]} -i ${SRC[1]} -o ${TGT[0]}',
+        source=[tr_cfg_node, json_node], target=[tr_json_node])
 
     bld(rule="${YASHA} --no-extensions -I.. -o ${TGT[0]} -v reltoroot %s -V ${SRC[1]} ${SRC[0]}" % reltoroot,
         source=[tr_j2_node, tr_json_node], target=[tr_html_node])

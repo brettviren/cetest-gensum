@@ -11,39 +11,46 @@ This page was generated on {{ date_generated }}.
 
 The summaries are organized into different test categories which
 define the general test station makeup.
+These links are also available from the header of each page.
 
 <ul>
-  <li><a href="adcasic"><b>ADC ASIC</b></a> test the ADC ASICs directly.</li>
-  <li><a href="feasic"><b>FE ASIC</b></a> test the FE ASICs directly.</li>
-  <li><a href="femb"><b>FEMB</b></a> test both FE and ADC asics together on an FEMB.</li>  
+  <li><a href="adcasic"><b>ADC ASIC</b></a> tests the ADC ASICs directly.</li>
+  <li><a href="feasic"><b>FE ASIC</b></a> tests the FE ASICs directly.</li>
+  <li><a href="femb"><b>FEMB</b></a> tests both FE and ADC asics together on an FEMB.</li>  
 </ul>
 
 Some different views of these basic result summaries are collated:
 
 <ul>
-  <li><a href="adcboard"><b>ADC Board</b></a> collects all ADC ASIC  test result summaries performed on a ADC particular test board as indicated by its board ID and a revision number that counts socket replacements.</li>
-
   <li><a href="adcid"><b>ADC ID</b></a> collects all tests for a particular ADC ASIC as indicated by its ADC ASIC ID number.  Includes links to all associated ADC ASIC and FEMB test result summaries.</li>
 
   <li><a href="feid"><b>FE ID</b></a> collects all tests for a particular FE ASIC as indicated by its FE ASIC ID number.  Includes links to all associated FE ASIC and FEMB test result summaries.</li>
 
 </ul>
 
-These links are also available form the header of each page.
 
 <h2>Testing Rate</h2>
 
 The rate of each type of test performed is summarized on a per day basis:
 
 <ul>
-  <li><a href="adcasic/testing-rate.html">ADC ASIC dailies</a>
-  <li><a href="feasic/testing-rate.html">FE ASIC dailies</a>
-  <li><a href="femb/testing-rate.html">FEMB dailies</a>
+  <li><a href="adcasic/testing-rate.html"><b>ADC ASIC dailies</b></a>
+  <li><a href="feasic/testing-rate.html"><b>FE ASIC dailies</b></a>
+  <li><a href="femb/testing-rate.html"><b>FEMB dailies</b></a>
 </ul>
 
-{% include 'footer.html.j2' %}
-    
+<h2>ADC ASIC Test Board Info</h2>
+
+<ul>
+  <li><a href="adcboard/usage.html"><b>ADC Board Usage</b></a> plot broken down by board ID and version</li>
+
+  <li><a href="adcboard"><b>ADC Board directory</b></a> collects all ADC ASIC  test result summaries performed on a ADC particular test board as indicated by its board ID and a revision number that counts socket replacements.</li>
+
+</ul>    
 
 <h2>Meta</h2>
 
 These pages are produced by the <a href="https://github.com/brettviren/cetest-gensum/">cetest-gensum</a> package.
+
+
+{% include 'footer.html.j2' %}

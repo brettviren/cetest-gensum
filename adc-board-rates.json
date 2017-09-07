@@ -1,0 +1,50 @@
+{
+   "chart": {
+      "type": "column"
+   },
+   "legend": {
+      "align": "right",
+      "backgroundColor": "white",
+      "borderColor": "#CCC",
+      "borderWidth": 1,
+      "floating": true,
+      "shadow": false,
+      "verticalAlign": "top",
+      "x": -30,
+      "y": 25
+   },
+   "plotOptions": {
+      "column": {
+         "dataLabels": {
+            "color": "white",
+            "enabled": true
+         },
+         "stacking": "normal"
+      }
+   },
+   "series": [ ],
+   "title": {
+      "text": "ADC Test Board Usage"
+   },
+   "tooltip": {
+      "headerFormat": "<b>Board ID {point.x}</b><br/>",
+      "pointFormat": "{series.name}: {point.y} usages<br/>Total: {point.stackTotal}"
+   },
+   "xAxis": {
+       "categories": [ ],
+       "title": { "text": "Board ID" }
+   },
+   "yAxis": {
+      "min": 0,
+      "stackLabels": {
+         "enabled": true,
+         "style": {
+            "color": "gray",
+            "fontWeight": "bold"
+         }
+      },
+      "title": {
+         "text": "Tests"
+      }
+   }
+}

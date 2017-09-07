@@ -1,11 +1,9 @@
-This holds some simple code to build a static website from the cold
-electronics testing data.  It's still a WIP.
+This holds some "simple" code to build a static website from the cold
+electronics testing data.  It's not meant to make sense to anyone.
 
 * Exercising it
 
-Pretty much this only makese sense to run as =arch@hothstor2=.  If you
-copy rsync a copy of the extracted JSON/PNG files you could run it
-elsewhere.
+Pretty much this must run on =hothstor2=.
 
 #+BEGIN_EXAMPLE
   $ virtualenv --system-site-packages -p python2 venv
@@ -16,8 +14,8 @@ elsewhere.
   $ ./waf install
 #+END_EXAMPLE
 
-This will take a few tens of seconds the first time or when something
-changes that takes a lot of reprocessing.  
+This will take a couple minutes when run on the full summary data set
+and to generate the entire set of web pages.
 
 * Design
 
@@ -26,21 +24,5 @@ This package works via:
 - [[https://stedolan.github.io/jq/manual/][jq]] to query JSON files to make new JSON files
 - [[https://github.com/kblomqvist/yasha][yasha]] to apply [[http://jinja.pocoo.org/][Jinja]] templates to JSON data
 - [[https://waf.io/][waf]] to run everything in parallel and when changes are needed
+- psycog to do some accessing of Sumatra's DB
 
-There is a taxonomy that is followed
-
-- category :: the general test type, embodied as a femb_python main gui/cli program (eg: =adcasic=, =femb=, =feasic=)
-- sample :: one data acquisition with a summary JSON file and possible PNGs, category and possibly config specific
-- unit :: one physical ASIC for which a sample was aquired.  idientified by serial number
-
-* Todo [3/5]
-
-- [X] Include PNG in rsync
-- [X] Initial support for =adcasic=
-- [X] Deal with wrongly written JSON files
-- [ ] Provide weekly summary(?)
-- [-] categories supported 
-  - [X] adcasic
-  - [ ] femb
-  - [ ] feasic
-  - [ ] osc

@@ -4,3 +4,4 @@ build
 .waf*
 venv
 *.pyc
+*.egg-info

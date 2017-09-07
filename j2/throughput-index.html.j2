@@ -1,0 +1,45 @@
+{% include 'header.html.j2' %}
+    
+
+<script type="text/javascript" class="init">
+  $(document).ready(function() {
+  $('#summary').DataTable();
+  } );
+  </script>
+
+<script src="https://code.highcharts.com/highcharts.src.js"></script>
+
+<h1>All ADC ASIC Test Result Summaries</h1>
+
+
+<table id="summary" class="display" width="100%" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Serial</th>
+      <th>Timestamp</th>
+      <th>Board</th>
+      <th>Config</th>
+      <th>DAQ host</th>
+      <th>Code version</th>
+      <th>DAQ pass</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for one in index %}
+    <tr>
+      <td><a href="{{ reltoroot }}/adcid/{{ one.serial }}">{{ one.serial }}</a></td>
+      <td><a href="{{ reltoroot }}/adcasic/{{ one.serial }}/{{ one.timestamp }}">{{ one.timestamp }}</a></td>
+      <td><a href="{{ reltoroot }}/adcboard/{{ one.board_id }}">{{ one.board_id }}</a></td>
+      <td>{{ one.femb_config }}</td>
+      <td>{{ one.hostname }}</td>
+      <td>{{ one.version }}</td>
+      <td>{{ one.pass }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+{% include 'footer.html.j2' %}
+    
