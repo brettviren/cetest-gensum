@@ -1,14 +1,14 @@
 from util import *
+import cege
 
 import smtdb
 smt_labels = smtdb.slurp_adc_labels()
 
+taxon = 'adcasic'
 
-#
-# The ADC ASIC taxon
-#
+
 def seeder(bld, **params):
-    ret = dataroot(bld).ant_glob("*/dsk/*/oper/adcasic/*/*/adcTest_*.json")
+    ret = dataroot(bld).ant_glob(cege.raw.seed_globs[taxon])
     print "#adcasic:\t%d" % len(ret)
     return ret
 
@@ -27,7 +27,7 @@ def builder(bld, seed_node, **params):
 
     ident = '-'.join([sn,ts])
 
-    taxon = 'adcasic'
+
     jq_node = jq_file(bld, taxon)
     j2_node = j2_file(bld, taxon)
     json_node = prod_file(bld, taxon, ident, format='json')

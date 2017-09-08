@@ -49,6 +49,43 @@ def board_usage(ctx, output, template, input):
     outdat = rates.board_usage(io.load(template), io.load(input))
     io.save(outdat, output)
 
+@cli.command('summarize-params')
+@click.option('-c','--category',type=str, default="",
+              help='Test category, if unset, guess based on file path')
+@click.option('-o','--output',type=click.File('wb'), default='-',
+              help='Output file for summary JSON')
+@click.argument('paramsfile', type=click.Path())
+@click.pass_context
+def summarize_params(ctx, category, output, paramsfile):
+    '''
+    Produce a summary of a test params.json file.
+    '''
+    import io, raw
+    if not category:
+        category = raw.guess_category(paramsfile)
+        print 'guessed',category
+
+    params = io.load(open(paramsfile, 'r'))
+    summary = raw.summarize_params(category, **params)
+    io.save(summary, output)
+
+@cli.command('summarize')
+@click.option('-c','--category',type=str, default="",
+              help='Test category, if unset, guess based on file path')
+@click.option('-o','--output',type=click.File('wb'), default='-',
+              help='Output file for summary JSON')
+@click.argument('paramsfile', type=click.Path())
+@click.pass_context
+def summarize(ctx, category, output, paramsfile):
+    '''
+    Produce a summary of a test params.json file.
+    '''
+    import io, raw
+    summary = raw.summarize(paramsfile, category)
+    io.save(summary, output)
+
+
+
 def main():
     cli(obj=dict())
 
