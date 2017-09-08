@@ -48,6 +48,7 @@ taxa = [
     "feasicindex",              # make index of all feasic results
     "fembindex",                # make index of all FEMB results
     "adcboard",                 # collect ADC ASIC test board ident
+    "oscindex",                      # oscillator tests indices
 ]
 
 # Note, products in *id taxa depend on produts of the previous.

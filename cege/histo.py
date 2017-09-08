@@ -42,6 +42,17 @@ def byday_byboard(data, cold):
         ret[board_id][date] += 1
     return ret
 
+def byday_count(data, key='passed'):
+    'Collate data into number of counts per day, return dictionary keyed by femb_config'
+    ret = defaultdict(Counter)
+    for one in data['index']:
+        cfgname = one['femb_config']
+        dt = dateutil.parser.parse(one['timestamp']) # eg "20170613T164258"
+        date = dt.date()
+        ret[cfgname][date] += one.get(key,0)
+    return ret
+    
+
 def to_series(hist):
     'Convert histograms to series data structure'
     ret = list()

@@ -1,0 +1,27 @@
+{% include 'header.html.j2' %}
+
+<h1>Number of Oscillator tests per day</h1>
+
+The plots below give the number of oscillator tests per day in various
+categories.  Each tests four (4) oscillators at a time with three
+cycles.  A full "pass" requires all three cycles to pass.
+
+
+<div id="osctested" style="width:100%; height:400px;"></div>
+
+<div id="oscpassed" style="width:100%; height:400px;"></div>
+
+<div id="oscfailed" style="width:100%; height:400px;"></div>
+
+<script>
+  $(function () {
+    $.getJSON('testing-rate.json', function (plot) {
+      Highcharts.chart('osctested', plot.tested);
+      Highcharts.chart('oscpassed', plot.passed);
+      Highcharts.chart('oscfailed', plot.failed);
+    });
+  });
+</script>
+  
+{% include 'footer.html.j2' %}
+    

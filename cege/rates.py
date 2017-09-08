@@ -25,6 +25,20 @@ def adcasic(cfg, dat):
                 config = dict(cfg, series = histo.to_series(hist_byfembconfig)),
     )
 
+
+def osc(cfg, dat):
+    'Collect oscillator tested and passed rates data'
+    hist_tested = histo.byday(dat)
+    hist_passed = histo.byday_count(dat, key='passed')
+    hist_failed = histo.byday_count(dat, key='failed')
+    return dict(tested = dict(cfg, series = histo.to_series(hist_tested)),
+                passed = dict(cfg, series = histo.to_series(hist_passed),
+                              subtitle=dict(text="Oscillators passed per day")),
+                failed = dict(cfg, series = histo.to_series(hist_failed),
+                              subtitle=dict(text="Oscillators failed per day")))
+    
+
+
 def simple(cfg, dat):
     'Simple plots by femb_config'
     hist = histo.byday(dat)
@@ -34,7 +48,6 @@ def simple(cfg, dat):
 
 feasic = simple
 femb = simple
-
 
 
 def board_usage(cfg, dat):

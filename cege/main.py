@@ -14,7 +14,7 @@ def cli(ctx):
     pass
 
 @cli.command('rates-chart-data')
-@click.option('-c','--category', type=click.Choice(['adcasic','feasic','femb']),
+@click.option('-c','--category', type=click.Choice(['adcasic','feasic','femb','osc']),
               help='Testing category', required=True)
 @click.option('-o','--output',type=click.File('wb'),
               help='Output JSON chart filename')
