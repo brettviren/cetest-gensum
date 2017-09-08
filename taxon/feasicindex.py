@@ -16,7 +16,7 @@ def seeder(bld, **params):
 def indexer(tsk):
     index = list()
     for node in tsk.inputs:
-        print node
+        #print node
         dat = json.loads(node.read())
         dat = dat["feasic"]["check_setup"]["params"]
         
