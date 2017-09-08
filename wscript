@@ -39,15 +39,15 @@
 limit_count = None
 #limit_count = 100
 taxa = [
-    "adcasic",                  # a sample result of the ADC ASIC test
-    "feasic",                   # a sample result of the FE ASIC test
-    "femb",                     # a sample result of the FEMB test
-    "adcid",                    # collect on ADC ASIC ident
-    "feid",                     # collect on FE ASIC ident
-    "adcasicindex",             # make index of all adcasic results
-    "feasicindex",              # make index of all feasic results
-    "fembindex",                # make index of all FEMB results
-    "adcboard",                 # collect ADC ASIC test board ident
+    # "adcasic",                  # a sample result of the ADC ASIC test
+    # "feasic",                   # a sample result of the FE ASIC test
+    # "femb",                     # a sample result of the FEMB test
+    # "adcid",                    # collect on ADC ASIC ident
+    # "feid",                     # collect on FE ASIC ident
+    # "adcasicindex",             # make index of all adcasic results
+    # "feasicindex",              # make index of all feasic results
+    # "fembindex",                # make index of all FEMB results
+    # "adcboard",                 # collect ADC ASIC test board ident
     "oscindex",                      # oscillator tests indices
 ]
 

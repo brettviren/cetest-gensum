@@ -28,14 +28,20 @@ def adcasic(cfg, dat):
 
 def osc(cfg, dat):
     'Collect oscillator tested and passed rates data'
-    hist_tested = histo.byday(dat)
+    hist_tested = histo.byday_count(dat, key='completed')
+    hist_aborted = histo.byday_count(dat, key='aborted')
     hist_passed = histo.byday_count(dat, key='passed')
     hist_failed = histo.byday_count(dat, key='failed')
-    return dict(tested = dict(cfg, series = histo.to_series(hist_tested)),
+
+    return dict(tested = dict(cfg, series = histo.to_series(hist_tested),
+                              subtitle=dict(text="Oscillator tests per day")),
+                aborted = dict(cfg, series = histo.to_series(hist_tested),
+                               subtitle=dict(text="Oscillator tests aborted per day")),
                 passed = dict(cfg, series = histo.to_series(hist_passed),
                               subtitle=dict(text="Oscillators passed per day")),
                 failed = dict(cfg, series = histo.to_series(hist_failed),
-                              subtitle=dict(text="Oscillators failed per day")))
+                              subtitle=dict(text="Oscillators failed per day"))
+    )
     
 
 

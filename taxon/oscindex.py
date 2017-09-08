@@ -9,26 +9,40 @@ taxon = 'osc'
 
 def seeder(bld, **params):
 
-    ret = dataroot(bld).ant_glob("*/dsk/*/oper/osc/osc/*/OscillatorTestingSummary/params.json")
+
+    # be sensitive to aborted runs, look for evidence that the first
+    # cycle was started.
+    ret = dataroot(bld).ant_glob("*/dsk/*/oper/osc/osc/*/OscillatorTestingThermalCycle1/params.json") 
     print "#osc:\t%d" % len(ret)
     return [ret]                # one big glob
 
 def indexer(tsk):
     index = list()
-    for node in tsk.inputs:
-        params = json.load(node)
+    for c1node in tsk.inputs:
+        params = json.load(c1node)
         this = dict(hostname = params['hostname'],
                     timestamp = params['session_start_time'],
                     version = params['femb_python_location'].split('/')[-2][12:],
                     femb_config = params['femb_config'])
-        summary = json.load(node.parent.find_node("Summary.txt"))
-        passed = 0
-        for one in summary[1:]:
-            if all([s == 'Passed' for s in one[1:]]):
-                passed += 1
-        this['passed'] = passed
-        this['failed'] = len(one[1:])-passed
-        index.append(this)
+
+        snode = c1node.parent.parent.find_node('OscillatorTestingSummary/Summary.txt')
+        if snode:
+            summary = json.load(snode)
+            passed = 0
+            for one in summary[1:]:
+                if all([s == 'Passed' for s in one[1:]]):
+                    passed += 1
+            this['passed'] = passed
+            this['failed'] = len(one[1:])-passed
+            this['completed'] = 1
+            this['aborted'] = 0
+        else:                   # looks like an aborted 
+            this['passed'] = 0
+            this['failed'] = 0
+            this['completed'] = 0
+            this['aborted'] = 1
+
+        index.append(this)                    
 
     out = tsk.outputs[0]
     out.write(json.dumps(dict(index=index), indent=4))

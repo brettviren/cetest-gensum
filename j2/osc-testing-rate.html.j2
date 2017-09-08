@@ -6,12 +6,21 @@ The plots below give the number of oscillator tests per day in various
 categories.  Each tests four (4) oscillators at a time with three
 cycles.  A full "pass" requires all three cycles to pass.
 
+<h2>Tests completed per day</h2>
 
 <div id="osctested" style="width:100%; height:400px;"></div>
 
+<h2>Oscillator chips passed per day</h2>
+
 <div id="oscpassed" style="width:100%; height:400px;"></div>
 
+<h2>Oscillator chips failed per day</h2>
+
 <div id="oscfailed" style="width:100%; height:400px;"></div>
+
+<h2>Tests aborted per day</h2>
+
+<div id="oscaborted" style="width:100%; height:400px;"></div>
 
 <script>
   $(function () {
@@ -19,6 +28,7 @@ cycles.  A full "pass" requires all three cycles to pass.
       Highcharts.chart('osctested', plot.tested);
       Highcharts.chart('oscpassed', plot.passed);
       Highcharts.chart('oscfailed', plot.failed);
+      Highcharts.chart('oscaborted', plot.aborted);
     });
   });
 </script>
