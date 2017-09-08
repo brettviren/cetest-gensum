@@ -15,7 +15,7 @@ def summarize(adcid, infiles):
         restype = fname.split("_",1)[0]
 
         if restype == "adcasic":
-            print infile
+            #print infile
             dat = json.loads(open(infile).read())
             adcasic = dat["adcasic"] # get substructure
             timestamp = adcasic["timestamp"]
