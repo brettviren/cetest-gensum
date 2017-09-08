@@ -3,22 +3,33 @@
 <h1>Number of Oscillator tests per day</h1>
 
 The plots below give the number of oscillator tests per day in various
-categories.  Each tests four (4) oscillators at a time with three
-cycles.  A full "pass" requires all three cycles to pass.
+categories.  Each tests four oscillators at a time with three cycles.
+Criteria for passing is that a chip must pass individual tests over
+three thermal cycles.
 
-<h2>Tests completed per day</h2>
+<h2>Oscillator chips tested per day</h2>
+
+This shows the number of chips per day that had complete testing
+(including any retesting).  There are four chips in each test.
 
 <div id="osctested" style="width:100%; height:400px;"></div>
 
 <h2>Oscillator chips passed per day</h2>
 
+This shows the number of chips that passed testing criteria, per day.
+
 <div id="oscpassed" style="width:100%; height:400px;"></div>
 
 <h2>Oscillator chips failed per day</h2>
 
+This shows the number of chips that did failed testing criteria, per day.
+
 <div id="oscfailed" style="width:100%; height:400px;"></div>
 
-<h2>Tests aborted per day</h2>
+<h2>Oscillator chips aborted per day</h2>
+
+This shows the number of chips with tests that were aborted.  If a
+test is aborted, all four chips are counted and likely retested.
 
 <div id="oscaborted" style="width:100%; height:400px;"></div>
 

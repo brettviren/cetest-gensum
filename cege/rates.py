@@ -34,9 +34,9 @@ def osc(cfg, dat):
     hist_failed = histo.byday_count(dat, key='failed')
 
     return dict(tested = dict(cfg, series = histo.to_series(hist_tested),
-                              subtitle=dict(text="Oscillator tests per day")),
-                aborted = dict(cfg, series = histo.to_series(hist_tested),
-                               subtitle=dict(text="Oscillator tests aborted per day")),
+                              subtitle=dict(text="Oscillator chips tested per day")),
+                aborted = dict(cfg, series = histo.to_series(hist_aborted),
+                               subtitle=dict(text="Oscillator chips aborted per day")),
                 passed = dict(cfg, series = histo.to_series(hist_passed),
                               subtitle=dict(text="Oscillators passed per day")),
                 failed = dict(cfg, series = histo.to_series(hist_failed),

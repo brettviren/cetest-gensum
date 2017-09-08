@@ -33,14 +33,14 @@ def indexer(tsk):
                 if all([s == 'Passed' for s in one[1:]]):
                     passed += 1
             this['passed'] = passed
-            this['failed'] = len(one[1:])-passed
-            this['completed'] = 1
+            this['failed'] = len(one)-passed
+            this['completed'] = 4
             this['aborted'] = 0
         else:                   # looks like an aborted 
             this['passed'] = 0
             this['failed'] = 0
             this['completed'] = 0
-            this['aborted'] = 1
+            this['aborted'] = 4
 
         index.append(this)                    
 
