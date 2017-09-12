@@ -2,7 +2,7 @@
 # The FE ID taxon collects info about each FE ASIC ID.
 #
 
-from util import *
+from .util import *
 from collections import defaultdict
 
 taxon = "feid"

@@ -47,7 +47,7 @@ def main(cfgfile, datfile, outfile=None):
     if outfile:
         open(outfile, 'w').write(outstr)
     else:
-        print outstr
+        print (outstr)
 
 if '__main__' == __name__:
 

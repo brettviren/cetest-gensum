@@ -1,3 +1,5 @@
+{% set reltoroot = '../../..' %}
+
 {% include 'header.html.j2' %}
     
 <script type="text/javascript" class="init">
@@ -6,24 +8,32 @@
   } );
   </script>
 
-{% set base = femb.fembTest_powercycle_test.params -%}
-
-<h1>Summary of FEMB Test on box:{{ base.box_ids[0] }} fm:{{ base.fm_ids[0] }} am:{{ base.am_ids[0] }} at {{ base.session_start_time }}</h1>
+{% if serial == "bogus" -%}
+<h1>Summary for bogus FEMB serial number </h1>
+{% else -%}
+<h1>Summary of FEMB Test on box:{{ box_ids[0] }} fm:{{ fm_ids[0] }} am:{{ am_ids[0] }} at {{ timestamp }}</h1>
+{% endif -%}
 
 <!-- fixme: most of these should be made links to other things -->
 
-<h2>Summary</h2>
+<h2>ASICs</h2>
 
+{% if serial == "bogus" -%}
+Bogus FEMB serial number.
+{% else -%}
 <ul>
-<li>ADC ASICSs: {% for adc in base.adc_asics[0] -%}<a href="{{ reltoroot }}/adcid/{{ adc }}/">[{{ adc }}]</a> {%endfor-%}</li>
-<li>FE ASICSs: {% for fe in base.fe_asics[0] -%}<a href="{{ reltoroot }}/feid/{{fe }}/">[{{ fe }}]</a> {%endfor-%}</li>
+<li>ADC ASICS IDs: {% for adc in adc_ids -%}<a href="{{ reltoroot }}/adcid/{{ adc }}/">[{{ adc }}]</a> {%endfor-%}</li>
+<li>FE ASICS IDs: {% for fe in fe_ids -%}<a href="{{ reltoroot }}/feid/{{ fe }}/">[{{ fe }}]</a> {%endfor-%}</li>
 </ul>
-
-{% if femb.fembTest_summary -%}
-<a href="{{ femb.fembTest_summary.pdfs[0] }}">Summary sheet</a>
 {% endif -%}
 
 <h2>Test results</h2>
+
+{% if results.fembTest_summary -%}
+<a href="{{ results.fembTest_summary.pdfs[0] }}">Summary sheet</a>
+{% endif -%}
+
+
 
 <table id="summary" class="display" width="100%" cellspacing="0">
   <thead>
@@ -39,26 +49,22 @@
     </tr>
   </thead>
   <tbody>
-{% for name, dat in femb.items() -%}
-{% set par = dat.params -%}
-{% for res in dat.results -%}
-{% if res.results_summary -%}
-{%   set rs = res.results_summary -%}
+{% for resname, resdat in results.items() -%}
+{% if resdat.gain -%}
     <tr>
-      <td>{{ par.outlabel[22:] }}</td>
-      <td>{{ par.gain }}</td>
-      <td>{{ par.shape }}</td>
-      <td>{{ par.base }}</td>
-      <td>{{ rs.asic_fail }}</td>
-      <td>{{ rs.chan_fail }}</td>
+      <td>{{ resname }} </td>
+      <td>{{ resdat.gain }}</td>
+      <td>{{ resdat.shape }}</td>
+      <td>{{ resdat.base }}</td>
+      <td>{{ resdat.asic_fail }}</td>
+      <td>{{ resdat.chan_fail }}</td>
       <td>
-	{% for png in dat.pngs -%}<a href="{{ png }}">PNG</a> {% endfor -%}
-	{% for pdf in dat.pdfs -%}<a href="{{ pdf }}">PDF</a> {% endfor -%}
+	{% for png in resdat.pngs -%}<a href="{{ png }}">PNG</a> {% endfor -%}
+	{% for pdf in resdat.pdfs -%}<a href="{{ pdf }}">PDF</a> {% endfor -%}
       </td>
 
     </tr>
 {%   endif -%}
-{% endfor -%}
 {% endfor -%}
   </tbody>
 </table>

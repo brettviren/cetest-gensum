@@ -1,4 +1,4 @@
-from util import *
+from .util import *
 
 import smtdb
 smt_labels = smtdb.slurp_fe_labels()
@@ -9,7 +9,7 @@ smt_labels = smtdb.slurp_fe_labels()
 #
 def seeder(bld, **params):
     ret = dataroot(bld).ant_glob("*/dsk/*/oper/feasic/*/*/check_setup/params.json")
-    print "#feasic:\t%d" % len(ret)
+    print ("#feasic:\t%d" % len(ret))
     return ret
     
 
@@ -28,9 +28,8 @@ def builder(bld, seed_node, **params):
     json_node = prod_file(bld, taxon, ident, format='json')
     html_node = prod_file(bld, taxon, ident, format='html')
 
-    injester = bld.path.find_resource("feasic-summary.py")
-    bld(rule="${SRC[0]} ${SRC[1]} ${TGT}",
-        source=[injester, seed_node], target=[json_node])
+    bld(rule='${CEGE} summarize -o ${TGT} ${SRC}',
+        source=[seed_node], target=[json_node])
 
     subdir = install_path(taxon, "board"+bid, ts)
     reltoroot = '/'.join(['..']*len(subdir.split('/')))

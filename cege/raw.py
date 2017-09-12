@@ -3,21 +3,20 @@
 Regularize the chaos of the various test results.
 '''
 import os
+import sys
 from glob import glob
 from . import io
 
-datadir='/dsk/1/data/sync-json'
-
-# globs that find all seeds of a given category.  Typically this
-# locates a 'params.json' file which indicates that a test run was at
-# least initiated.
-# Frist "*" is femb_config second is timestamp.
+# globs that find all seeds of a given category relative to some root directory.
+# Typically this locates a 'params.json' file which indicates that a
+# test run was at least initiated.  First "*" is femb_config second is
+# timestamp.
 seed_globs = dict(
 
-    adcasic = os.path.join(datadir, 'hothdaq?/dsk/?/oper/adcasic/*/*/params.json'),
-    feasic = os.path.join(datadir, 'hothdaq?/dsk/?/oper/feasic/*/*/check_setup/params.json'),
-    femb = os.path.join(datadir, 'hothdaq?/dsk/?/oper/femb/*/*/fembTest_powercycle_test/params.json'),
-    osc = os.path.join(datadir, 'hothdaq?/dsk/?/oper/osc/osc/*/OscillatorTestingThermalCycle1/params.json'),
+    adcasic = '*/dsk/?/oper/adcasic/*/*/params.json',
+    feasic =  '*/dsk/?/oper/feasic/*/*/check_setup/params.json',
+    femb =  '*/dsk/?/oper/femb/*/*/fembTest_powercycle_test/params.json',
+    osc =  '*/dsk/?/oper/osc/osc/*/OscillatorTestingThermalCycle1/params.json',
 )
 
 
@@ -71,10 +70,13 @@ def get_femb_config(**params):
     return ""
 
 def fix_asic_id(one):
-    one = one.strip().lower()
+    one = str(one).strip().lower()
     if not one or one[0] in '_*-':
         return 'bogus'
     return one
+def fix_asic_ids(many):
+    return [fix_asic_id[one] for one in many]
+
 def fix_board_id(one):
     one = one.strip().upper()
     if not one or one[0] in '_*-':
@@ -82,11 +84,23 @@ def fix_board_id(one):
     return one
 
 def fix_list(lst, fix_entry):
+    if not lst:
+        return lst
     if ' ' in lst[0]:
         lst = lst[0].split()
     if ',' in lst[0]:
         lst = lst[0].split(',')
     return [fix_entry(one) for one in lst]
+
+def common_params(category, **params):
+    '''
+    Return a common subset data likely found in larger params.json structure.
+    '''
+    return dict(category = category,
+                femb_config = get_femb_config(**params),
+                timestamp = get_timestamp(**params),
+                version = get_version(**params),
+                hostname = params.get('hostname',"hothless"))
 
 def summarize_params(cat, **params):
     '''
@@ -98,7 +112,6 @@ def summarize_params(cat, **params):
                    femb_config = get_femb_config(**params),
                    timestamp = get_timestamp(**params),
                    version = get_version(**params),
-                   datadir = params['datadir'],
                    hostname = params.get('hostname',"hothless"))
 
     # deal with category specific stuff.
@@ -116,90 +129,146 @@ def summarize_params(cat, **params):
         bid = list()
         summary['fe_ids'] = fix_list(params['fe_asics'][0], fix_asic_id)
         summary['adc_ids'] = fix_list(params['adc_asics'][0], fix_asic_id)
-        summary['datasubdir'] = params['datasubdir']
         for key in 'box_ids fm_ids am_ids'.split():
             ident = params[key][0] #  just first entry
-            summary[key] = ident
+            if ident:
+                summary[key] = ident
+            else:
+                summary[key] = "no_" + key
+                continue
             bid.append(ident)
-        summary['serial'] = '-'.join(bid)
+        if not bid:
+            summary['serial'] = 'bogus'
+        else:
+            summary['serial'] = '-'.join(bid)
 
     return summary
 
 def summarize_adcasic(seed_path):
     results = dict()
 
-    full_params = io.load(open(seed_path,'r'))
-    params = summarize_params(cat, **full_params)
+    full_params = io.load(open(seed_path, encoding='utf-8'))
+    params = summarize_params('adcasic', **full_params)
 
     parent = os.path.dirname(seed_path)
     results['pngs'] = [os.path.basename(p) for p in glob(os.path.join(parent,'*.png'))]
     results['pdfs'] = [os.path.basename(p) for p in glob(os.path.join(parent,'*.pdf'))]
-    res = glob(os.path.join(datadir,'adcTest_*.json'))
+    res = glob(os.path.join(seed_path.replace("params.json",'adcTest_*.json')))
     if res:
         res = io.load(open(res[0], 'r'))
         results['passed'] = res['testResults']['pass']
     else:
+        sys.stderr.write("No test results for ADC ASIC {adc_id} at {timestamp}\n".format(**params))
         results['passed'] = False
 
-    return dict(adcasic=results)
-
-def summarize_feasic(seed_path):
-
-    parent = os.path.dirname(os.path.dirname(seed_path))
-
-    # fixme: this is a big slurp, could be reduced.
-    for param_fname in glob(os.path.join(parent,'*/params.json')):
-        full_params = io.load(open(param_fname,'r'))
-        params = summarize_params('feasic', **full_params)
-        results_fname = glob(param_fname.replace("params.json","*-results.json"))
-        if results_fname:
-            resdat = io.load(open(results_fname[0], 'r'))
-        else:
-            resdat = None
-        dsd = params['datasubdir']
-        results[dsd] = dict(results=resdat, params=params)
-    return dict(feasic=results)
+    return dict(adcasic=dict(results=results, params=params))
 
 def summarize_femb_result(res):
+    ret = dict()
+
+    for var in "gain shape base".split():
+        maybe = "config_"+var
+        if maybe in res:
+            ret[var] = res[maybe]
+
+    # count failures
     try:
         results = res["results"]
     except KeyError:
-        return res
+        return dict()
     asic_fail = 0
     chan_fail = 0
     for one in results:         # count failures
         if one["fail"] != "1":
             continue
-        if one.has_key("asic"):
+        if "asic" in one and one["fail"] == "1":
             asic_fail += 1
-        if one.has_key("ch"):
+        if "ch" in one and one["fail"] == "1":
             chan_fail += 1
-    results_summary = dict(asic_fail = asic_fail, chan_fail=chan_fail)
-    res["results_summary"] = results_summary
-    return res
+    ret.update(asic_fail = asic_fail, chan_fail=chan_fail)
+    return ret
 
 
 def summarize_femb(seed_path):
-
-    parent = os.path.dirname(os.path.dirname(seed_path))
+    full_params = io.load(open(seed_path,'r'))
+    params = summarize_params('femb', **full_params)
 
     results = dict()
-
+    parent = os.path.dirname(os.path.dirname(seed_path))
     for param_fname in glob(os.path.join(parent, "*/params.json")):
-        full_params = io.load(open(param_fname,'r'))
-        params = summarize_params('femb', **full_params)
-        resdat = list()
-        for resfile in glob(param_fname.replace("params.json","*-results.json")):
-            one = io.load(open(resfile,'r'))
-            one = summarize_femb_result(one)
-            resdat.append(one)
+        datasubdir = os.path.basename(os.path.dirname(param_fname))
+
+        resdat = dict()
+        resfile = glob(param_fname.replace("params.json","*-results.json"))
+        if resfile:
+            one = io.load(open(resfile[0],'r'))
+            resdat = summarize_femb_result(one)
+
         sd = os.path.dirname(param_fname)
         pngs = ['_'.join(p.split("/")[-2:]) for p in glob(os.path.join(sd, "*.png"))]
         pdfs = ['_'.join(p.split("/")[-2:]) for p in glob(os.path.join(sd, "*.pdf"))]
-        dsd = params['datasubdir']
-        results[dsd] = dict(params=params, results=resdat, pngs=pngs, pdfs=pdfs)
 
-    return dict(femb=results)
+        results[datasubdir] = dict(pngs=pngs, pdfs=pdfs, **resdat)
+
+    return dict(femb=dict(results=results, params=params))
+
+
+
+def summarize_feasic_result(res):
+    ret = dict()
+
+    for var in "gain shape base".split():
+        maybe = "config_"+var
+        if maybe in res:
+            ret[var] = res[maybe]
+
+    # count failures
+    try:
+        results = res["results"]
+    except KeyError:
+        return dict()
+    asic_fail = 0
+    chan_fail = 0
+    asic_passfail = list()
+    for one in results:         # count failures
+        if "asic" in one:
+            if one["fail"] == "1":
+                asic_fail += 1
+                asic_passfail.append("failed")
+            else:
+                asic_passfail.append("passed")
+        if "ch" in one and one["fail"] == "1":
+            chan_fail += 1
+    ret.update(asic_fail = asic_fail, chan_fail=chan_fail, asic_passfail=asic_passfail)
+    return ret
+
+
+def summarize_feasic(seed_path):
+    full_params = io.load(open(seed_path,'r'))
+    params = summarize_params('feasic', **full_params)
+
+    results = dict()
+    parent = os.path.dirname(os.path.dirname(seed_path))
+    for param_fname in glob(os.path.join(parent, "*/params.json")):
+        # shunt a few job specific input parameters
+        thisp = io.load(open(param_fname,'r'))
+        datasubdir = thisp.get('datasubdir',None)
+        if not datasubdir:
+            continue            # power, check_setup
+
+        resfile = glob(param_fname.replace("params.json","*-results.json"))
+        resdat = dict()
+        if resfile:
+            one = io.load(open(resfile[0],'r'))
+            resdat = summarize_feasic_result(one)
+
+        sd = os.path.dirname(param_fname)
+        pngs = ['_'.join(p.split("/")[-2:]) for p in glob(os.path.join(sd, "*.png"))]
+        pdfs = ['_'.join(p.split("/")[-2:]) for p in glob(os.path.join(sd, "*.pdf"))]
+
+        results[datasubdir] = dict(pngs=pngs, pdfs=pdfs, **resdat)
+
+    return dict(feasic=dict(results=results, params=params))
 
 
 def summarize(seed_path, cat=None):

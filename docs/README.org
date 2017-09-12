@@ -1,0 +1,11 @@
+* Seed
+
+A =params.json= file that marks a test began.  Used to find any results JSON files from the test.
+
+* Summary
+
+A summary of a seed.
+
+* Index
+
+An index of all summaries of a particular test category.

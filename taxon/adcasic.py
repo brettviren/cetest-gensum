@@ -1,19 +1,21 @@
-from util import *
-import cege
+from .util import *
 
-import smtdb
-smt_labels = smtdb.slurp_adc_labels()
+import cege.adcasic
 
 taxon = 'adcasic'
 
 
 def seeder(bld, **params):
-    ret = dataroot(bld).ant_glob(cege.raw.seed_globs[taxon])
-    print "#adcasic:\t%d" % len(ret)
+    paths = cege.adcasic.seed_paths()
+    ret = [bld.path.make_node(p) for p in paths]
+    assert(all(ret))
+    print ("#adcasic:\t%d" % len(ret))
     return ret
 
 
 def builder(bld, seed_node, **params):
+    assert(seed_node)
+
     # sus out the seed to find what taxa instance products to build 
     pnode = seed_node.parent.find_node("params.json")
     jparam = json.loads(pnode.read())

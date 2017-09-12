@@ -57,7 +57,7 @@ def to_series(hist):
     'Convert histograms to series data structure'
     ret = list()
     for cfgname, one in hist.items():
-        data = one.items()
+        data = [x for x in one.items()]
         data.sort()
         ret.append(dict(name=cfgname, data=data))
     return ret

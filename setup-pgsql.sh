@@ -9,8 +9,10 @@ export PGUSER=cetester_${user}
 export PGDATABASE=cetest_oper
 export PGHOST=hothstor2.phy.bnl.gov
 
-if [ -d venv ] ; then
-    source venv/bin/activate
-else
-    echo "No venv found, make one in $venv"
-fi
+for maybe in venv venv3
+do
+    if [ -d $maybe ] ; then
+	source $maybe/bin/activate
+	echo "Setup $maybe"
+    fi
+done

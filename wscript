@@ -37,24 +37,27 @@
 # The taxonmy includes
 
 limit_count = None
-#limit_count = 100
+limit_count = 100
 taxa = [
-    # "adcasic",                  # a sample result of the ADC ASIC test
-    # "feasic",                   # a sample result of the FE ASIC test
-    # "femb",                     # a sample result of the FEMB test
-    # "adcid",                    # collect on ADC ASIC ident
-    # "feid",                     # collect on FE ASIC ident
-    # "adcasicindex",             # make index of all adcasic results
-    # "feasicindex",              # make index of all feasic results
-    # "fembindex",                # make index of all FEMB results
+    #"adcasic",                  # a sample result of the ADC ASIC test
+#    "adcasicindex",             # make index of all adcasic results
+
+    "feasic",                   # a sample result of the FE ASIC test
+    #"femb",                     # a sample result of the FEMB test
+
+    #"adcid",                    # collect on ADC ASIC ident
+    #"feid",                     # collect on FE ASIC ident
+    #"feasicindex",              # make index of all feasic results
+    #"fembindex",                # make index of all FEMB results
     # "adcboard",                 # collect ADC ASIC test board ident
-    "oscindex",                      # oscillator tests indices
+    #"oscindex",                      # oscillator tests indices
 ]
 
 # Note, products in *id taxa depend on produts of the previous.
 
 import os
 import time
+import cege
 from collections import defaultdict
 
 def options(opt):
@@ -63,28 +66,103 @@ def options(opt):
     pass
 
 def configure(cfg):
-    cfg.find_program("jq",var="JQ",mandatory=True)
-    cfg.find_program("yasha",var="YASHA",mandatory=True)
-    cfg.find_program("cege",var="CEGE",mandatory=True)
+    #cfg.find_program("jq",var="JQ",mandatory=True)
+    #cfg.find_program("yasha",var="YASHA",mandatory=True)
+    #cfg.find_program("cege",var="CEGE",mandatory=True)
+    pass
 
 import importlib
 
+def render_summary(**params):   
+    def task(tsk):
+        cege.io.render(tsk.outputs[0].abspath(),
+                       tsk.inputs[0].abspath(),
+                       **params)
+        tsk.outputs[1].write(cege.io.dumps(params))
+    return task
+
+def compile_index(taxmod):
+    def task(tsk):
+        index = taxmod.indexer(tsk.inputs)
+        tsk.outputs[0].write(cege.io.dumps(index))
+    return task
+
+def render_index(tsk):
+    index = cege.io.load(tsk.inputs[1])
+    cege.io.render(tsk.outputs[0].abspath(), tsk.inputs[0].abspath(), index=index)
+
 def build(bld):
-
-    taxa_dat = defaultdict(list) # hold metadata keyed by taxon name
-
+    
     for taxon in taxa:
-        mod = importlib.import_module("taxon.%s" % taxon)
+        taxmod = importlib.import_module("cege.%s" % taxon)
 
-        print ("Building for %s" % taxon)
+        seed_nodes = list()
+        json_nodes = list()
 
-        for count, seed in enumerate(mod.seeder(bld, **taxa_dat)):
-            dat = mod.builder(bld, seed, **taxa_dat)
-            if not dat:
-                continue
-            taxa_dat[taxon].append(dat)
-            if limit_count and count > limit_count:
-                break           # keep fast for testing
+        summary_tmpl_node = bld.srcnode.find_resource("j2/%s-summary.html.j2"%taxon)
+
+        for seed in taxmod.seed_paths():
+            summary = taxmod.summarize(seed)
+            unique = taxmod.unique(summary)
+
+            seed_node = bld.root.find_node(seed)
+            seed_nodes.append(seed_nodes)
+
+            html_node = bld.path.find_or_declare(unique + ".html")
+            json_node = bld.path.find_or_declare(unique + ".json")
+            json_nodes.append(json_node)
+
+            bld(rule=render_summary(**summary),
+                source=[summary_tmpl_node, seed_node],
+                target=[html_node, json_node])
+
+            instdir = "{taxon}/{serial}/{timestamp}".format(taxon=taxon, **summary)
+            instdir = "${PREFIX}/" + instdir
+            bld.install_as(instdir+"/index.html", html_node)
+
+            figs     = summary['pngs'] + summary['pdfs']
+            fig_srcs = summary['png_sources'] + summary['pdf_sources']
+            for fig,fig_src in zip(figs, fig_srcs):
+                fig_node = bld.root.find_node(fig_src)
+                assert(fig_node)
+                bld.install_as(instdir+"/"+fig, fig_node)
+            
+
+            # short circuit for testing
+            if limit_count and len(seed_nodes) > limit_count:
+                break
+
+        print ("#%s: %d"%(taxon, len(seed_nodes)))
+
+        index_json_node = bld.path.find_or_declare("%s.index.json"%taxon)
+        bld(rule=compile_index(taxmod), source=json_nodes, target=[index_json_node])
+
+        index_tmpl_node = bld.srcnode.find_resource("j2/%s-index.html.j2"%taxon)
+        index_html_node = bld.path.find_or_declare("%s-index.html"%taxon)
+        bld(rule=render_index,
+            source=[index_tmpl_node, index_json_node],
+            target=[index_html_node])
+        bld.install_as("${PREFIX}/%s/index.html"%taxon, index_html_node)
+
+
+
+
+
+    #bld.recurse(taxa)
+
+    # taxa_dat = defaultdict(list) # hold metadata keyed by taxon name
+
+    # for taxon in taxa:
+    #     mod = importlib.import_module("taxon.%s" % taxon)
+    #     print ("Building for %s" % taxon)
+
+    #     for count, seed in enumerate(mod.seeder(bld, **taxa_dat)):
+    #         dat = mod.builder(bld, seed, **taxa_dat)
+    #         if not dat:
+    #             continue
+    #         taxa_dat[taxon].append(dat)
+    #         if limit_count and count > limit_count:
+    #             break           # keep fast for testing
 
 
     j2_node = bld.path.find_resource("j2/top.html.j2")

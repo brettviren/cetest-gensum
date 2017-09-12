@@ -1,6 +1,6 @@
 {
    "chart": {
-      "type": "spline",
+      "type": "column",
       "zoomType": "x"
    },
    "plotOptions": {

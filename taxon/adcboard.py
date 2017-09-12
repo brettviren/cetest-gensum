@@ -19,7 +19,6 @@ def make_indexer(bid):
     def indexer(tsk):
         index = list()
         for node in tsk.inputs:
-            #print node
             dat = json.loads(node.read())
             dat = dat["adcasic"]
             this = dict()

@@ -4,7 +4,7 @@ Do testing rates related processing.
 '''
 
 
-import histo
+from cege import histo
 
 def adcasic(cfg, dat):
     'Make ADC ASIC test rates plot data'
@@ -45,15 +45,24 @@ def osc(cfg, dat):
     
 
 
-def simple(cfg, dat):
+def feasic(cfg, dat):
     'Simple plots by femb_config'
     hist = histo.byday(dat)
     series = histo.to_series(hist)
     plot = dict(cfg, series=series)
     return plot
 
-feasic = simple
-femb = simple
+def femb(cfg, dat):
+    'Simple plots by femb_config'
+    hist_tested = histo.byday_count(dat, key='completed')
+    hist_aborted = histo.byday_count(dat, key='aborted')
+    return dict(tested = dict(cfg, series = histo.to_series(hist_tested),
+                              subtitle=dict(text="Tests completed")),
+                aborted = dict(cfg, series = histo.to_series(hist_aborted),
+                              subtitle=dict(text="Tests aborted")))
+
+
+
 
 
 def board_usage(cfg, dat):

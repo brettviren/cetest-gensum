@@ -1,3 +1,5 @@
+{% set reltoroot = '..' %}
+
 {% include 'header.html.j2' %}
     
 
@@ -17,17 +19,15 @@
       <th>Timestamp</th>
       <th>Board</th>
       <th>Config</th>
-      <th>DAQ pass</th>
     </tr>
   </thead>
   <tbody>
-    {% for one in index %}
+    {% for ident, one in index.items() %}
     <tr>
       <td><a href="{{ reltoroot }}/feid/{{ one.serial }}">{{ one.serial }}</a></td>
-      <td><a href="{{ reltoroot }}/feasic/board{{ one.board_id }}/{{ one.timestamp }}">{{ one.timestamp }}</a></td>
-      <td><a href="{{ reltoroot }}/feasic/board{{ one.board_id }}">{{ one.board_id }}</a></td>
+      <td><a href="board{{ one.board }}/{{ one.timestamp }}">{{ one.timestamp }}</a></td>
+      <td><a href="board{{ one.board }}">{{ one.board }}</a></td>
       <td>{{ one.femb_config }}</td>
-      <td>{{ one.pass }}</td>
     </tr>
     {% endfor %}
   </tbody>

@@ -2,7 +2,7 @@
 # This produces an index about all ADC ASIC summaries.
 #
 
-from util import *
+from .util import *
 
 taxon = "adcasic"
 

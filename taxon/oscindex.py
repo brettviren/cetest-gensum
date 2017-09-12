@@ -13,7 +13,7 @@ def seeder(bld, **params):
     # be sensitive to aborted runs, look for evidence that the first
     # cycle was started.
     ret = dataroot(bld).ant_glob("*/dsk/*/oper/osc/osc/*/OscillatorTestingThermalCycle1/params.json") 
-    print "#osc:\t%d" % len(ret)
+    print ("#osc:\t%d" % len(ret))
     return [ret]                # one big glob
 
 def indexer(tsk):

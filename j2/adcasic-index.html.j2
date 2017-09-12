@@ -1,3 +1,5 @@
+{% set reltoroot = '..' %}
+
 {% include 'header.html.j2' %}
     
 
@@ -23,10 +25,10 @@
     </tr>
   </thead>
   <tbody>
-    {% for one in index %}
+    {% for ident, one in index.items() %}
     <tr>
       <td><a href="{{ reltoroot }}/adcid/{{ one.serial }}">{{ one.serial }}</a></td>
-      <td><a href="{{ reltoroot }}/adcasic/{{ one.serial }}/{{ one.timestamp }}">{{ one.timestamp }}</a></td>
+      <td><a href="{{ one.serial }}/{{ one.timestamp }}">{{ one.timestamp }}</a></td>
       <td><a href="{{ reltoroot }}/adcboard/{{ one.board_id }}">{{ one.board_id }}</a></td>
       <td>{{ one.femb_config }}</td>
       <td>{{ one.hostname }}</td>

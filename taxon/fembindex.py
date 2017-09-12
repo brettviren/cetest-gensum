@@ -2,7 +2,7 @@
 # This produces an index about all ADC ASIC summaries.
 #
 
-from util import *
+from .util import *
 
 taxon = "femb"
 
@@ -18,25 +18,19 @@ def indexer(tsk):
     for node in tsk.inputs:
         dat = json.loads(node.read())
         try:
-            dat = dat["femb"]["fembTest_summary"]["params"]
+            params = dat["femb"]["params"]
+            results = dat["femb"]["results"]
         except KeyError:
-            print "Skipping, missing FEMB data for %s" % node.name
+            print ("Skipping, missing FEMB data for %s" % node.name)
             continue
 
-        this = dict()
-        this['pass'] = None
-        this['hostname'] = dat['hostname']
-        this['femb_config'] = dat['femb_config']
-        bid = '-'.join([ str(dat["box_ids"][0]),
-                         str(dat["fm_ids"][0]),
-                         str(dat["am_ids"][0])])
-        this['serial'] = this['board_id'] = bid
-        this['version'] = dat['femb_python_location'].split('/')[-2][12:]
-        this['timestamp'] =  dat['session_start_time']
-        this['board_id'] = fix_board_id(this['board_id'])
-        this['adc_asics'] = dat['adc_asics'][0] # warning, assumes just
-        this['fe_asics'] = dat['fe_asics'][0]   # one set of asics
-        index.append(this)
+        completed = 0
+        aborted = 1
+        if "fembTest_summary" in results:
+            completed = 1
+            aborted = 0
+        
+        index.append(dict(params, completed=completed, aborted=aborted, ntests=len(results)))
 
     out = tsk.outputs[0]
     out.write(json.dumps(dict(index=index), indent=4))
@@ -49,7 +43,7 @@ def builder(bld, node_list, **params):
     html_node = prod_file(bld, taxon, 'index', schema='index', format='html')
 
     # testing rate summary
-    tr_j2_node = bld.path.find_resource('j2/testing-rate.html.j2')
+    tr_j2_node = bld.path.find_resource('j2/femb-testing-rate.html.j2')
     tr_cfg_node = bld.path.find_resource('femb-testing-rate-cfg.json')
     tr_json_node = prod_file(bld, taxon, 'testing-rate', schema='chart', format='json')
     tr_html_node = prod_file(bld, taxon, 'testing-rate', schema='chart', format='html')
