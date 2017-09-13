@@ -1,0 +1,37 @@
+{% set reltoroot = '../..' %}
+
+{% include 'header.html.j2' %}
+    
+
+<script type="text/javascript" class="init">
+  $(document).ready(function() {
+  $('#summary').DataTable();
+  } );
+  </script>
+
+<h1>Oscillator Chip Pre-screening Summary for Test at {{ timestamp }}</h1>
+
+
+<table id="summary" class="display" width="100%" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td># Osc. passed</td><td>{{ passed }}</td></tr>
+    <tr><td># Osc. failed</td><td>{{ failed }}</td></tr>
+    <tr><td>Test Completed?</td><td>{{ completed }}</td></tr>
+    <tr><td>Timestamp</td><td>{{ timestamp }}</td></tr>
+
+    <tr><td>DAQ host</td><td>{{ hostname }}</td></tr>
+    <tr><td>DAQ version</td><td><a href="https://github.com/DUNE/femb_python/releases/tag/{{ version }}">{{ version }}</a></td></tr>
+    <tr><td>DAQ Config</td><td>{{ femb_config }}</td></tr>
+  </tbody>
+</table>
+
+
+
+{% include 'footer.html.j2' %}
+    

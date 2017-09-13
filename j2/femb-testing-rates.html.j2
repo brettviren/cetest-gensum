@@ -7,7 +7,7 @@
 
 <script>
   $(function () {
-    $.getJSON('testing-rate.json', function (plot) {
+    $.getJSON('testing-rates.json', function (plot) {
       Highcharts.chart('tested', plot.tested);
       Highcharts.chart('aborted', plot.aborted);
     });

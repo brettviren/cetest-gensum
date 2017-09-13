@@ -1,7 +1,7 @@
 {% set reltoroot = '..' %}
 
 {% include 'header.html.j2' %}
-
+    
 
 <script type="text/javascript" class="init">
   $(document).ready(function() {
@@ -9,28 +9,22 @@
   } );
   </script>
 
-<h1>All FEMB Test Result Summaries</h1>
+<h1>All Oscillator Pre-screening Test Result Summaries</h1>
 
 
 <table id="summary" class="display" width="100%" cellspacing="0">
   <thead>
     <tr>
-      <th>Box-FM-AM</th>
       <th>Timestamp</th>
-      <th>ADC ASIC IDs</th>
-      <th>FE ASIC IDs</th>
       <th>Config</th>
       <th>DAQ host</th>
       <th>Code version</th>
     </tr>
   </thead>
   <tbody>
-    {% for name, one in index.items() %}
+    {% for ident, one in index.items() %}
     <tr>
-      <td><a href="{{ one.serial }}">{{ one.serial }}</a></td>
-      <td><a href="{{ one.serial }}/{{ one.timestamp }}">{{ one.timestamp }}</a></td>
-      <td>{% for adc in one.adc_ids -%}<a href="{{ reltoroot }}/adcid/{{ adc }}">[{{ adc }}]</a> {% endfor -%}</td>
-      <td>{% for fe  in one.fe_ids  -%}<a href="{{ reltoroot }}/feid/{{ fe }}">[{{ fe }}]</a> {% endfor -%}</td>
+      <td><a href="{{ one.timestamp }}">{{ one.timestamp }}</a></td>
       <td>{{ one.femb_config }}</td>
       <td>{{ one.hostname }}</td>
       <td><a href="https://github.com/DUNE/femb_python/releases/tag/{{ one.version }}">{{ one.version }}</a></td>
@@ -38,6 +32,7 @@
     {% endfor %}
   </tbody>
 </table>
+
 
 
 {% include 'footer.html.j2' %}

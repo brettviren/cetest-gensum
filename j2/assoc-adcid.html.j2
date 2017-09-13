@@ -1,0 +1,55 @@
+{% set reltoroot = '../..' -%}
+{% include 'header.html.j2' %}
+    
+<script type="text/javascript" class="init">
+  $(document).ready(function() {
+  $('#summary').DataTable();
+  } );
+  </script>
+
+<h1>All test results involving ADC# {{ serial }}</h1>
+
+<h2>Notes</h2>
+
+The results table below includes all tests in which ADC# {{ serial }} participated.  The meaning of <b>Board ID</b> depends on the test:
+
+<ul>
+  <li><b>adcasic</b> the ADC ASIC test board ID</li>
+  <li><b>femb</b> the FE motherboard ID expressed as box#-fm#-am# (fm=FPGA mez., am=analogue mez)</li>  
+</ul>
+
+Board ID links go to a directory of all results in which that board
+particpated.  Timestamp links go to a specific result.
+
+<h2>Results</h2>
+
+<table id="summary" class="display" width="100%" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Test Type</th>
+      <th>Board ID</th>
+      <th>Timestamp</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for one in index -%}
+    {% if one.category == "adcasic" -%}
+    <tr>
+      <td>adcasic</td>
+      <td><a href="{{ reltoroot }}/adcboard/{{ one.board_id }}">{{ one.board_id }}</a></td>
+      <td><a href="{{ reltoroot }}/adcasic/{{ one.serial }}/{{ one.timestamp }}">{{ one.timestamp }}</a></td>
+    </tr>
+    {% endif -%}
+    {% if one.category == "femb" -%}
+    <tr>
+      <td>femb</td>
+      <td><a href="{{ reltoroot }}/femb/{{ one.serial }}">{{ one.serial }}</a></td>
+      <td><a href="{{ reltoroot }}/femb/{{ one.serial }}/{{ one.timestamp }}">{{ one.timestamp }}</a></td>
+    </tr>
+    {% endif -%}
+    {% endfor -%}
+  </tbody>
+</table>
+
+{% include 'footer.html.j2' %}
+    

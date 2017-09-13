@@ -72,6 +72,7 @@ def summarize(seed_path):
     png_sources = list()
     pdf_sources = list()
 
+    ret['install'] = list()
     for param_fname in glob(os.path.join(parent, "*/params.json")):
         # shunt a few job specific input parameters
         thisp = io.load(open(param_fname,'r'))
@@ -86,21 +87,18 @@ def summarize(seed_path):
             resdat = summarize_feasic_result(one)
 
         sd = os.path.dirname(param_fname)
-        mypngs = glob(os.path.join(sd, "*.png"))
-        mypdfs = glob(os.path.join(sd, "*.pdf"))
-        resdat['pngs'] = [os.path.basename(p) for p in mypngs]
-        resdat['pdfs'] = [os.path.basename(p) for p in mypdfs]
 
-        png_sources += mypngs
-        pdf_sources += mypdfs
+        for ext in ['png', 'pdf']:
+            key = ext+'s'
+            glb = '*.'+ext
+            srcs = glob(os.path.join(sd, glb))
+            ret['install'] += srcs
+            resdat[key] = [os.path.basename(p) for p in srcs]
 
         results[datasubdir] = resdat
 
-    ret['png_sources'] = png_sources
-    ret['pngs'] = [os.path.basename(p) for p in png_sources]
-    ret['pdf_sources'] = pdf_sources
-    ret['pdfs'] = [os.path.basename(p) for p in pdf_sources]
     ret['results'] = results
+    ret['associations'] = dict(feid=ret['fe_ids']) # could add adc ids and fe board
     return ret
 
 
@@ -108,20 +106,19 @@ def unique(summary):
     'Return short string which should be unique and usable as file base name'
     return 'feasic-{ident}'.format(**summary)
 
+def instdir(summary):
+    'Return relative installation directory for one summary'
+    return "feasic/{serial}/{timestamp}".format(**summary)
+
 def indexer(summary_fps):
-    'Index FE ASICs.  The index is by FE ID and time stamp'
-
+    'Index FE ASIC tests'
     ret = dict()
-
     for fp in summary_fps:
         summary = io.load(fp)
-        ts = summary['timestamp']
-        for fe_id in summary['fe_ids']:
-            key = fe_id + '-' + ts
-            ret[key] = dict(serial = fe_id,
-                            timestamp = ts,
-                            board = summary['fe_testboard_id'],
-                            femb_config = summary['femb_config'])
-            
+        ret[summary['ident']] = summary
     return ret
-    
+
+
+from . import rates
+def testing_rates(cfg, index):
+    return rates.feasic(cfg, dict(index=index.values()));

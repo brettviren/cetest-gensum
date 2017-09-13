@@ -32,7 +32,7 @@
       <td><a href="{{ reltoroot }}/adcboard/{{ one.board_id }}">{{ one.board_id }}</a></td>
       <td>{{ one.femb_config }}</td>
       <td>{{ one.hostname }}</td>
-      <td>{{ one.version }}</td>
+      <td><a href="https://github.com/DUNE/femb_python/releases/tag/{{ one.version }}">{{ one.version }}</a></td>
       <td>{{ one.pass }}</td>
     </tr>
     {% endfor %}

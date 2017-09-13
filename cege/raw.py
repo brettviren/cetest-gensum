@@ -20,26 +20,6 @@ seed_globs = dict(
 )
 
 
-def fix_board_id(thing):
-    'Try to unstupify board IDs'
-    bogus = "bogus"
-    thing = str(thing).strip().lower()
-    if not thing:
-        return bogus
-    if thing[0] in "*_-":
-        return bogus
-    return thing
-
-def fix_asic_id(thing):
-    'Try to unstupify ASIC IDs'
-    bogus = "BOGUS"
-    thing = str(thing).strip().upper()
-    if not thing:
-        return bogus
-    if thing[0] in "*_-":
-        return bogus
-    return thing
-
 
 def guess_category(params_path):
     '''
@@ -70,17 +50,17 @@ def get_femb_config(**params):
     return ""
 
 def fix_asic_id(one):
-    one = str(one).strip().lower()
+    one = str(one).strip().upper()
     if not one or one[0] in '_*-':
-        return 'bogus'
+        return 'BOGUS'
     return one
 def fix_asic_ids(many):
     return [fix_asic_id[one] for one in many]
 
 def fix_board_id(one):
-    one = one.strip().upper()
+    one = one.strip().lower()
     if not one or one[0] in '_*-':
-        return 'BOGUS'
+        return 'bogus'
     return one
 
 def fix_list(lst, fix_entry):

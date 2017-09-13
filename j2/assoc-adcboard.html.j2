@@ -1,44 +1,43 @@
-{% set reltoroot = '..' %}
-
+{% set reltoroot = '../..' %}
 {% include 'header.html.j2' %}
-
-
+    
 <script type="text/javascript" class="init">
   $(document).ready(function() {
   $('#summary').DataTable();
   } );
   </script>
 
-<h1>All FEMB Test Result Summaries</h1>
+<h1>ADC ASIC test results using test board# {{ serial }}</h1>
 
+
+<h2>Results</h2>
 
 <table id="summary" class="display" width="100%" cellspacing="0">
   <thead>
     <tr>
-      <th>Box-FM-AM</th>
+      <th>ADC serial#</th>
       <th>Timestamp</th>
-      <th>ADC ASIC IDs</th>
-      <th>FE ASIC IDs</th>
+      <th>Board</th>
       <th>Config</th>
       <th>DAQ host</th>
       <th>Code version</th>
+      <th>DAQ pass</th>
     </tr>
   </thead>
   <tbody>
-    {% for name, one in index.items() %}
+    {% for one in index %}
     <tr>
-      <td><a href="{{ one.serial }}">{{ one.serial }}</a></td>
-      <td><a href="{{ one.serial }}/{{ one.timestamp }}">{{ one.timestamp }}</a></td>
-      <td>{% for adc in one.adc_ids -%}<a href="{{ reltoroot }}/adcid/{{ adc }}">[{{ adc }}]</a> {% endfor -%}</td>
-      <td>{% for fe  in one.fe_ids  -%}<a href="{{ reltoroot }}/feid/{{ fe }}">[{{ fe }}]</a> {% endfor -%}</td>
+      <td><a href="{{ reltoroot }}/adcid/{{ one.serial }}">{{ one.serial }}</a></td>
+      <td><a href="{{ reltoroot }}/adcasic/{{ one.serial }}/{{ one.timestamp }}">{{ one.timestamp }}</a></td>
+      <td>{{ one.board_id }}</td>
       <td>{{ one.femb_config }}</td>
       <td>{{ one.hostname }}</td>
       <td><a href="https://github.com/DUNE/femb_python/releases/tag/{{ one.version }}">{{ one.version }}</a></td>
+      <td>{{ one.pass }}</td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
-
 
 {% include 'footer.html.j2' %}
     

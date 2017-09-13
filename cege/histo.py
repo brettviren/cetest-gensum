@@ -51,6 +51,18 @@ def byday_count(data, key='passed'):
         date = dt.date()
         ret[cfgname][date] += one.get(key,0)
     return ret
+
+def byday_if(data, key='passed'):
+    'Collate data into number of true per, return dictionary keyed by femb_config'
+    ret = defaultdict(Counter)
+    for one in data['index']:
+        if not one.get(key, False):
+            continue
+        cfgname = one['femb_config']
+        dt = dateutil.parser.parse(one['timestamp']) # eg "20170613T164258"
+        date = dt.date()
+        ret[cfgname][date] += 1
+    return ret
     
 
 def to_series(hist):
@@ -62,7 +74,16 @@ def to_series(hist):
         ret.append(dict(name=cfgname, data=data))
     return ret
 
+def _board_sorter(x):
+    try:
+        v = int(x[0])
+    except ValueError:
+        return 9999999999
+    return v
+
+
 def to_stack(data, cold=True, clickable = True):
+    assert(data)
     boards = set()
     counts = Counter()
     for one in data['index']:
@@ -75,6 +96,8 @@ def to_stack(data, cold=True, clickable = True):
         counts[bid] += 1
         sbid = bid.split('v')[0]
         boards.add(sbid)
+    if not counts.values():
+        return dict(categories=list(), series=list())
     maxver = max(counts.values())
     boards = list(boards)
     boards.sort()
@@ -92,7 +115,7 @@ def to_stack(data, cold=True, clickable = True):
         series = list()
         for ver, data in matrix.items():
             data_with_url = list()
-            for b,y in zip(boards, data):
+            for b,y in zip(boards,data):
                 if ver != "v0":
                     b += ver
                 d = dict(y=y, url=b)
@@ -102,5 +125,5 @@ def to_stack(data, cold=True, clickable = True):
     else:
         series = [dict(name=k, data=v) for k,v in matrix.items()]
 
-    return dict(categories=boards, series = series)
+    return dict(categories=boards, series=series)
 

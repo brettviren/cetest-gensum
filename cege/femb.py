@@ -49,7 +49,7 @@ def summarize(seed_path):
     use by summary.html.j2 and as one element in the index'''
 
     seed = io.load_path(seed_path)
-    ret = raw.common_params('feasic', **seed)
+    ret = raw.common_params('femb', **seed)
 
 
     bid = list()
@@ -76,10 +76,7 @@ def summarize(seed_path):
     results = dict()
     parent = os.path.dirname(os.path.dirname(seed_path))
     ret['datadir'] = parent
-    png_sources = list()
-    pdf_sources = list()
-    pngs = list()
-    pdfs = list()
+    ret['install'] = list()
     for param_fname in glob(os.path.join(parent, "*/params.json")):
         datasubdir = os.path.basename(os.path.dirname(param_fname))
 
@@ -89,28 +86,21 @@ def summarize(seed_path):
             one = io.load(open(resfile[0],'r'))
             resdat = summarize_femb_result(one)
 
+        # record graphics files for installation as well as
+        # destination use with care to make destination files uniquely
+        # named
         sd = os.path.dirname(param_fname)
-
-        # full paths
-        mypng = glob(os.path.join(sd, "*.png"))
-        png_sources += mypng
-        mypdf = glob(os.path.join(sd, "*.pdf"))
-        pdf_sources += mypdf
-
-
-        # installed paths.  Need to make unique by using subdir
-        resdat['pngs'] = ['_'.join(p.split('/')[-2:]) for p in mypng]
-        pngs += resdat['pngs']
-        resdat['pdfs'] = ['_'.join(p.split('/')[-2:]) for p in mypdf]
-        pdfs += resdat['pdfs']
+        for ext in ['png', 'pdf']:
+            key = ext+'s'
+            glb = '*.'+ext
+            srcs = glob(os.path.join(sd, glb))
+            dsts = ['_'.join(p.split('/')[-2:]) for p in srcs]
+            ret['install'] += [(s,d) for s,d in zip(srcs,dsts)]
+            resdat[key] = dsts
 
         results[datasubdir] = resdat
 
-    ret['pngs'] = pngs
-    ret['pdfs'] = pdfs
-    ret['png_sources'] = png_sources
-    ret['pdf_sources'] = pdf_sources
-
+    ret['associations'] = dict(feid=ret['fe_ids'], adcid=ret['adc_ids'])
     ret['results'] = results
     return ret
 
@@ -119,6 +109,11 @@ def unique(summary):
     'Return short string which should be unique and usable as file base name'
     return 'feasic-{ident}'.format(**summary)
 
+def instdir(summary):
+    'Return relative installation directory for one summary'
+    return "femb/{serial}/{timestamp}".format(**summary)
+
+
 def indexer(summary_fps):
     'Return index data structure from a sequence of file like things'
     ret = dict()
@@ -126,3 +121,8 @@ def indexer(summary_fps):
         summary = io.load(fp)
         ret[summary['ident']] = summary
     return ret
+
+
+from . import rates
+def testing_rates(cfg, index):
+    return rates.femb(cfg, dict(index=index.values()));

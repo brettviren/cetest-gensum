@@ -33,14 +33,18 @@ def summarize(seed_path):
     ret['label'] = smt_labels.get(ts, None)
 
     ret['board_id'] = raw.fix_board_id(seed['board_id'])
+    assert "V" not in ret['board_id'], ret['board_id'] # should be lower case
 
     parent = os.path.dirname(seed_path)
     ret['datadir'] = parent
 
-    ret['png_sources'] = glob(os.path.join(parent,'*.png'))
-    ret['pdf_sources'] = glob(os.path.join(parent,'*.pdf'))
-    ret['pngs'] = [os.path.basename(p) for p in ret['png_sources']]
-    ret['pdfs'] = [os.path.basename(p) for p in ret['pdf_sources']]
+    ret['install'] = list()
+    for ext in ['png', 'pdf']:
+        key = ext+'s'
+        glb = '*.'+ext
+        srcs = glob(os.path.join(parent, glb))
+        ret['install'] += srcs
+        ret[key] = [os.path.basename(p) for p in srcs]
 
     res = glob(os.path.join(seed_path.replace("params.json",'adcTest_*.json')))
     if res:
@@ -52,11 +56,19 @@ def summarize(seed_path):
         ret['passed'] = False
         ret['completed'] = False
 
+    # record what other things this summary is associated with
+    ret['associations'] = dict(adcid=[serial], adcboard=[ret['board_id']])
+
     return ret
 
 def unique(summary):
     'Return short string which should be unique and usable as file base name'
     return 'adcasic_{serial}_{timestamp}'.format(**summary)
+
+def instdir(summary):
+    'Return relative installation directory for one summary'
+    return "adcasic/{serial}/{timestamp}".format(**summary)
+
 
 def indexer(summary_fps):
     'Return index data structure from a sequence of file like things'
@@ -65,3 +77,7 @@ def indexer(summary_fps):
         summary = io.load(fp)
         ret[summary['ident']] = summary
     return ret
+
+from . import rates
+def testing_rates(cfg, index):
+    return rates.adcasic(cfg, dict(index=index.values()));

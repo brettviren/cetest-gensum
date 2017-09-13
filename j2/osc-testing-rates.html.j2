@@ -24,7 +24,7 @@ cycles.  A full "pass" requires all three cycles to pass.
 
 <script>
   $(function () {
-    $.getJSON('testing-rate.json', function (plot) {
+    $.getJSON('testing-rates.json', function (plot) {
       Highcharts.chart('osctested', plot.tested);
       Highcharts.chart('oscpassed', plot.passed);
       Highcharts.chart('oscfailed', plot.failed);

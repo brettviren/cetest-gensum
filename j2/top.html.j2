@@ -1,3 +1,4 @@
+{% set reltoroot = '.' %}
 {% include 'header.html.j2' %}
     
 <h1>BNL Cold Electronics Testing Result Summaries</h1>
@@ -5,7 +6,6 @@
 Here you can find a sumary (of summaries) of the BNL cold electronics
 testing results.  These pages should be incrementally refreshed on an
 hourly basis as new testing data is acquired.
-This page was generated on {{ date_generated }}.
 
 <h2>Summary Categories</h2>
 
@@ -17,6 +17,8 @@ These links are also available from the header of each page.
   <li><a href="adcasic"><b>ADC ASIC</b></a> tests the ADC ASICs directly.</li>
   <li><a href="feasic"><b>FE ASIC</b></a> tests the FE ASICs directly.</li>
   <li><a href="femb"><b>FEMB</b></a> tests both FE and ADC asics together on an FEMB.</li>  
+  <li><a href="osc"><b>Oscillator</b></a> pre-screening (only anonymous pass/fail statistics).</li>  
+  <li><a href="flash"><b>Flash Memory</b></a> pre-screening (only anonymous pass/fail statistics).</li>  
 </ul>
 
 Some different views of these basic result summaries are collated:
@@ -34,16 +36,16 @@ Some different views of these basic result summaries are collated:
 The rate of each type of test performed is summarized on a per day basis:
 
 <ul>
-  <li><a href="adcasic/testing-rate.html"><b>ADC ASIC dailies</b></a>
-  <li><a href="feasic/testing-rate.html"><b>FE ASIC dailies</b></a>
-  <li><a href="femb/testing-rate.html"><b>FEMB dailies</b></a>
-  <li><a href="osc/"><b>Oscillator dailies</b></a>
+  <li><a href="adcasic/testing-rates.html"><b>ADC ASIC dailies</b></a>
+  <li><a href="feasic/testing-rates.html"><b>FE ASIC dailies</b></a>
+  <li><a href="femb/testing-rates.html"><b>FEMB dailies</b></a>
+  <li><a href="osc/testing-rates.html"><b>Oscillator dailies</b></a>
 </ul>
 
 <h2>ADC ASIC Test Board Info</h2>
 
 <ul>
-  <li><a href="adcboard/usage.html"><b>ADC Board Usage</b></a> plot broken down by board ID and version</li>
+  <li><a href="adcboard/usage.html"><b>ADC Board Cold Usage</b></a> plot broken down by board ID and version</li>
 
   <li><a href="adcboard"><b>ADC Board directory</b></a> collects all ADC ASIC  test result summaries performed on a ADC particular test board as indicated by its board ID and a revision number that counts socket replacements.</li>
 
@@ -53,5 +55,8 @@ The rate of each type of test performed is summarized on a per day basis:
 
 These pages are produced by the <a href="https://github.com/brettviren/cetest-gensum/">cetest-gensum</a> package.
 
+<p>
+
+This page was generated on {{ date_generated }}.  
 
 {% include 'footer.html.j2' %}
