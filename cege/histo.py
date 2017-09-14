@@ -76,54 +76,71 @@ def to_series(hist):
 
 def _board_sorter(x):
     try:
-        v = int(x[0])
+        v = int(x)
     except ValueError:
-        return 9999999999
+        return 99999
     return v
 
 
-def to_stack(data, cold=True, clickable = True):
+def to_stack(data, cold=True, clickable = True, completed=True):
     assert(data)
+
     boards = set()
+    versions = set()
     counts = Counter()
+
     for one in data['index']:
-        bid = one['board_id'].lower()
         have_cold = "cold" in one['femb_config']
         if cold != have_cold:
             continue
-        if 'v' not in bid:
-            bid += 'v0'
-        counts[bid] += 1
-        sbid = bid.split('v')[0]
-        boards.add(sbid)
-    if not counts.values():
+        have_completed = one["completed"]
+        if have_completed != completed:
+            continue
+
+        board_id = one['board_id'].lower()
+
+        bid=None
+        iver=0
+        try:
+            bid = int(board_id)
+        except ValueError:
+            if 'v' in board_id:          # 10v2
+                bid,iver = map(int, board_id.split('v'))
+            else:               # probably "bogus"
+                bid = -1
+
+        counts[(bid,iver)] += 1
+        boards.add(bid)
+        versions.add(iver)
+
+    if not boards:
         return dict(categories=list(), series=list())
-    maxver = max(counts.values())
+
     boards = list(boards)
     boards.sort()
-    nboards = len(boards)
+    sboards = list()
+    for bid in boards:
+        if bid<0: sboards.append("bogus")
+        else: sboards.append(str(bid))
 
-    # must invert the counts.
-    matrix = defaultdict(lambda: [0]*nboards)
-    for bidver, count in counts.items():
-        bid,ver = bidver.split('v')
-        bind = boards.index(bid)
-        sver = 'v%s'%ver
-        matrix[sver][bind] = count
 
-    if clickable:
-        series = list()
-        for ver, data in matrix.items():
-            data_with_url = list()
-            for b,y in zip(boards,data):
-                if ver != "v0":
-                    b += ver
-                d = dict(y=y, url=b)
-                data_with_url.append(d)
-            series.append(dict(name=ver, data=data_with_url))
-           
-    else:
-        series = [dict(name=k, data=v) for k,v in matrix.items()]
+    versions = list(versions)
+    versions.sort()
+    versions.reverse()          # grow stack up starting from v0
+    
+    series = list()
+    for iver in versions:
+        sver = "v%d" % iver
+        fver = ""               # preserve original dumbness
+        if iver > 0:
+            fver = "v%d" % iver
 
-    return dict(categories=boards, series=series)
+        point_data = list()
+        for bid,sbid in zip(boards,sboards):
+            usages = counts[(bid,iver)]
+            d = dict(y=usages, url=sbid+fver)
+            point_data.append(d)
+        series.append(dict(name=sver, data=point_data))
+
+    return dict(categories=sboards, series=series)
 

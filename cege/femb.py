@@ -100,6 +100,13 @@ def summarize(seed_path):
 
         results[datasubdir] = resdat
 
+    if results:                 # for plots
+        ret['completed'] = 1
+        ret['aborted'] = 0
+    else:
+        ret['completed'] = 0
+        ret['aborted'] = 1
+
     ret['associations'] = dict(feid=ret['fe_ids'], adcid=ret['adc_ids'])
     ret['results'] = results
     return ret

@@ -26,23 +26,26 @@ def adcasic(cfg, dat):
     )
 
 
-def osc(cfg, dat):
-    'Collect oscillator tested and passed rates data'
+def anonymous(cfg, dat):
+    'Collect tested and passed rates data'
     hist_tested = histo.byday_if(dat, key='completed')
     hist_aborted = histo.byday_if(dat, key='aborted')
     hist_passed = histo.byday_count(dat, key='passed')
     hist_failed = histo.byday_count(dat, key='failed')
 
     return dict(tested = dict(cfg, series = histo.to_series(hist_tested),
-                              subtitle=dict(text="Oscillator tests per day")),
+                              subtitle=dict(text="Tests per day")),
                 aborted = dict(cfg, series = histo.to_series(hist_aborted),
-                               subtitle=dict(text="Oscillator tests aborted per day")),
+                               subtitle=dict(text="Tests aborted per day")),
                 passed = dict(cfg, series = histo.to_series(hist_passed),
-                              subtitle=dict(text="Oscillators passed per day")),
+                              subtitle=dict(text="Units passed per day")),
                 failed = dict(cfg, series = histo.to_series(hist_failed),
-                              subtitle=dict(text="Oscillators failed per day"))
+                              subtitle=dict(text="Units failed per day"))
     )
     
+osc = anonymous
+flash = anonymous
+
 
 
 def feasic(cfg, dat):
@@ -72,8 +75,14 @@ def board_usage(cfg, dat):
     cfg.xAxis.categories and cfg.series.
     '''
 
-    cs = histo.to_stack(dat)
-    copy = dict(cfg, series = cs['series'])
-    copy['xAxis']['categories'] = cs['categories']
-    return copy
+    ret = dict()
+    for name, tf in [('completed',True), ('aborted', False)]:
+        cs = histo.to_stack(dat, completed=tf)
+        copy = dict(cfg, series = cs['series'],
+                    title=dict(text="ADC Test Board Usage: %s runs" % name.capitalize()))
+                    
+        copy['xAxis'] = dict(copy['xAxis'], categories = cs['categories'])
+        ret[name] = copy
+
+    return ret
     

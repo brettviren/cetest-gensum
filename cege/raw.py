@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 '''
 Regularize the chaos of the various test results.
+
+A lot of this code is obsolete but some is still used....
+
 '''
 import os
 import sys

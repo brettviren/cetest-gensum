@@ -1,18 +1,17 @@
 #!/usr/bin/env python
 
-# prepare installation area:
-# $ ln -s /dsk/1/data/sync-json $HOME/public_html/data
+# How to build the data
 
-# prepare dev area
-# $ virtualenv --system-site-packages -p python2 venv
+# $ virtualenv --system-site-packages -p python3 venv
 # $ source venv/bin/activate
 # $ pip install -r requirements.txt 
-# $ ./waf configure --prefix=$HOME/public_html/summary
-# $ ./waf build install
+# $ ./waf configure --prefix=$HOME/public_html/summary [--data-root=/path/to/hoth/data]
+# $ ./waf -p install
 
+# On a fresh build, this will run ~40k tasks in about a minute.
 
 limit_count = None
-#limit_count = 100
+#limit_count = 500
 
 # Categories of tests to process
 categories = [
@@ -20,24 +19,8 @@ categories = [
     "feasic",
     "femb",
     "osc",
-#    "flash",
+    "flash",
 ]
-
-taxa = [
-#    "adcasic",                  # a sample result of the ADC ASIC test
-#    "adcasicindex",             # make index of all adcasic results
-
-#    "feasic",                   # a sample result of the FE ASIC test
-#    "femb",                     # a sample result of the FEMB test
-
-    #"adcid",                    # collect on ADC ASIC ident
-    #"feid",                     # collect on FE ASIC ident
-    #"feasicindex",              # make index of all feasic results
-    #"fembindex",                # make index of all FEMB results
-    # "adcboard",                 # collect ADC ASIC test board ident
-    #"oscindex",                      # oscillator tests indices
-]
-
 
 
 import os
@@ -51,9 +34,6 @@ def options(opt):
     pass
 
 def configure(cfg):
-    #cfg.find_program("jq",var="JQ",mandatory=True)
-    #cfg.find_program("yasha",var="YASHA",mandatory=True)
-    #cfg.find_program("cege",var="CEGE",mandatory=True)
     pass
 
 import importlib
@@ -119,23 +99,6 @@ def render_association(categ, serial):
     return task
 
 
-def build_testing_rates(bld, mod, categ, index_json_node):
-    'Do build stuff for testing rates plots'
-    if not hasattr(mod, "testing_rates"):
-        print("No testing_rates for %s" % categ)
-        return
-    plot_cfg_node = bld.path.find_resource("cfg/%s-testing-rate.json"%categ)
-    plot_json_node = bld.path.find_or_declare("%s-testing-rate.json"%categ)
-    plot_tmpl_node = bld.path.find_resource("j2/%s-testing-rate.html.j2"%categ)
-    plot_html_node = bld.path.find_or_declare("%s-testing-rate.html"%categ)
-    bld(rule=compile_cfg_index(mod.testing_rates),
-        source=[plot_cfg_node, index_json_node],
-        target=[plot_json_node])
-    bld(rule=render_generic(), source=[plot_tmpl_node], target=[plot_html_node])
-    bld.install_as("${PREFIX}/%s/testing-rate.html"%categ, plot_html_node)
-    bld.install_as("${PREFIX}/%s/testing-rate.json"%categ, plot_json_node)
-
-
 def build_plot(bld, categ, methname, index_json_node):
     'Build generic plot via category module and method name'
     try:
@@ -192,6 +155,8 @@ def build(bld):
 
 
         seed_paths = mod.seed_paths()
+        if limit_count:
+            seed_paths=seed_paths[:limit_count]
         print ("#%s: %d"%(categ, len(seed_paths)))
 
         for seed in seed_paths:
@@ -224,10 +189,6 @@ def build(bld):
                 assert(src_node)
                 bld.install_as(instdir+"/"+dst, src_node)
             
-
-            if limit_count and len(seed_nodes) > limit_count:
-                break           # short-circuit seeds for faster testing
-
             assoc = summary.get("associations", dict())
             for thing, ids in assoc.items():
                 for one_id in ids:
