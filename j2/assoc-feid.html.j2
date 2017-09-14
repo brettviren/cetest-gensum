@@ -51,20 +51,6 @@ particpated.  Timestamp links go to a specific result.
   </tbody>
 </table>
 
-<h2>Dump</h2>
-
-{% for one in index -%}
-{{ one.keys() }}
-
-category: {{ one.category }}
-
-serial: {{ one.serial }}
-
-<p>
-  {% endfor -%}
-
-<p>
-{{ index }}
   
 {% include 'footer.html.j2' %}
     

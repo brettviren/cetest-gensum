@@ -15,7 +15,7 @@
 <table id="summary" class="display" width="100%" cellspacing="0">
   <thead>
     <tr>
-      <th>Serial</th>
+      <th>FE IDs</th>
       <th>Timestamp</th>
       <th>Board</th>
       <th>Config</th>
@@ -24,9 +24,9 @@
   <tbody>
     {% for ident, one in index.items() %}
     <tr>
-      <td><a href="{{ reltoroot }}/feid/{{ one.serial }}">{{ one.serial }}</a></td>
-      <td><a href="board{{ one.board }}/{{ one.timestamp }}">{{ one.timestamp }}</a></td>
-      <td><a href="board{{ one.board }}">{{ one.board }}</a></td>
+      <td>{% for feid in one.fe_ids -%}<a href="{{ reltoroot }}/feid/{{ feid }}">[{{ feid }}]</a> {% endfor -%}</td>
+      <td><a href="board{{ one.fe_testboard_id }}/{{ one.timestamp }}">{{ one.timestamp }}</a></td>
+      <td><a href="board{{ one.fe_testboard_id }}">{{ one.fe_testboard_id }}</a></td>
       <td>{{ one.femb_config }}</td>
     </tr>
     {% endfor %}
