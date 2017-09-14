@@ -1,4 +1,4 @@
-{% set reltoroot = '../../..' %}
+{% set reltoroot = '../..' %}
 {% include 'header.html.j2' %}
     
 <script type="text/javascript" class="init">
@@ -7,7 +7,7 @@
   } );
   </script>
 
-<h1>ADC ASIC test results using test board# {{ boardid }}</h1>
+<h1>ADC ASIC test results using test board# {{ serial }}</h1>
 
 
 <h2>Results</h2>
@@ -15,7 +15,7 @@
 <table id="summary" class="display" width="100%" cellspacing="0">
   <thead>
     <tr>
-      <th>Serial</th>
+      <th>ADC serial#</th>
       <th>Timestamp</th>
       <th>Board</th>
       <th>Config</th>

@@ -1,3 +1,4 @@
+{% set reltoroot = '..' %}
 {% include 'header.html.j2' %}
 
 <h1>Number of ADC ASIC tests per day</h1>
@@ -36,7 +37,7 @@ Separated by the underlying <tt>femb_config</tt> label.  Note, the <tt>hothdaq</
 
 <script>
   $(function () {
-    $.getJSON('testing-rate.json', function (plot) {
+    $.getJSON('testing-rates.json', function (plot) {
       Highcharts.chart('byhothdaq-cold', plot.cold);
       Highcharts.chart('byhothdaq-warm', plot.warm);
       Highcharts.chart('byboardcold', plot.board);

@@ -1,3 +1,5 @@
+{% set reltoroot = '../../..' %}
+
 {% include 'header.html.j2' %}
     
 
@@ -7,12 +9,12 @@
   } );
   </script>
 
-<h1>ADC ASIC Test Summary for ADC# {{ adcasic.serial }} sampled on {{ adcasic.timestamp }}</h1>
+<h1>ADC ASIC Test Summary for ADC# {{ serial }} sampled on {{ timestamp }}</h1>
 
 
 <h2>Links</h2>
 <ul>
-  <li><a href="{{ reltoroot }}/adcid/{{ adcasic.serial }}/">All results for ADC# {{ adcasic.serial }}</a></li>
+  <li><a href="{{ reltoroot }}/adcid/{{ serial }}/">All results for ADC# {{ serial }}</a></li>
   <li><a href="http://localhost:8942/adc/{{ label }}/">Sumatra entry</a> (requires local Sumatra server or SSH tunnel)</li>
 </ul>
 
@@ -26,21 +28,24 @@
     </tr>
   </thead>
   <tbody>
-    <tr><td>Passed</td><td>{{ adcasic.pass }}</td></tr>
-    <tr><td>ADC ASIC sn#</td><td><a href="{{ reltoroot }}/adcid/{{ adcasic.serial }}">{{ adcasic.serial }}</a></td></tr>
-    <tr><td>Timestamp</td><td>{{ adcasic.timestamp }}</td></tr>
-    <tr><td>Test board</td><td><a href="{{ reltoroot }}/adcboard/{{ adcasic.board_id }}">{{ adcasic.board_id }}</a></td></tr>
-    <tr><td>DAQ host</td><td>{{ adcasic.hostname }}</td></tr>
-    <tr><td>DAQ version</td><td>{{ adcasic.version }}</td></tr>
-    <tr><td>DAQ Config</td><td>{{ adcasic.femb_config }}</td></tr>
+    <tr><td>Passed</td><td>{{ passed }}</td></tr>
+    <tr><td>ADC ASIC sn#</td><td><a href="{{ reltoroot }}/adcid/{{ serial }}">{{ serial }}</a></td></tr>
+    <tr><td>Timestamp</td><td>{{ timestamp }}</td></tr>
+    <tr><td>Test board</td><td><a href="{{ reltoroot }}/adcboard/{{ board_id }}">{{ board_id }}</a></td></tr>
+    <tr><td>DAQ host</td><td>{{ hostname }}</td></tr>
+    <tr><td>DAQ version</td><td><a href="https://github.com/DUNE/femb_python/releases/tag/{{ version }}">{{ version }}</a></td></tr>
+    <tr><td>DAQ Config</td><td>{{ femb_config }}</td></tr>
   </tbody>
 </table>
 
 <h2>Summary Plots</h2>
 
-{% for png in adcasic.png -%}
-<h3>{{ png }}</h3>
-<img src="{{ png }}">
+{% for png,pdf in zip(pngs,pdfs) -%}
+<center>
+  <a href="{{ pdf }}">{{ pdf }}</a>
+
+  <img src="{{ png }}">
+</center>
 {% endfor -%}
 
 

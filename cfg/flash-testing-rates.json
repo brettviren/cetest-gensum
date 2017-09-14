@@ -10,12 +10,15 @@
          }
       }
    },
+   "exporting": {
+       "enabled": true
+   },
    "series": [ ],
    "subtitle": {
-      "text": "Counts completed tests, including retests."
+      "text": "Completed tests, including retests, per day."
    },
    "title": {
-      "text": "FEMB tests per day"
+      "text": "Flash Chips"
    },
    "tooltip": {
       "headerFormat": "<b>{series.name}</b><br>",
@@ -39,7 +42,7 @@
    "yAxis": {
       "min": 0,
       "title": {
-         "text": "Tests performed per day"
+         "text": "counts per day"
       }
    }
 }

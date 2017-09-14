@@ -1,0 +1,37 @@
+{% set reltoroot = '..' %}
+{% include 'header.html.j2' %}
+
+<h1>Number of Flash tests per day</h1>
+
+The plots below give the number of flash tests per day in various
+categories.  Each tests four (4) flash chips at a time.
+
+<h2>Tests completed per day</h2>
+
+<div id="tested" style="width:100%; height:400px;"></div>
+
+<h2>Flash chips passed per day</h2>
+
+<div id="passed" style="width:100%; height:400px;"></div>
+
+<h2>Flash chips failed per day</h2>
+
+<div id="failed" style="width:100%; height:400px;"></div>
+
+<h2>Tests aborted per day</h2>
+
+<div id="aborted" style="width:100%; height:400px;"></div>
+
+<script>
+  $(function () {
+    $.getJSON('testing-rates.json', function (plot) {
+      Highcharts.chart('tested', plot.tested);
+      Highcharts.chart('passed', plot.passed);
+      Highcharts.chart('failed', plot.failed);
+      Highcharts.chart('aborted', plot.aborted);
+    });
+  });
+</script>
+  
+{% include 'footer.html.j2' %}
+    

@@ -1,0 +1,26 @@
+digraph flow {
+	index_yasha[shape=box];
+	summary_yasha[shape=box];
+	
+
+	seed->summary[label="number=1\ntypes=1"];
+
+	summary->summary_json->summary;
+
+	summary->index[label="number=many\ntypes=1"];
+	index->index_json->index;
+
+	summary_json->summary_yasha;
+	summary_html_j2->summary_yasha->summary_html;
+	
+
+	index_json->index_yasha;
+	index_html_j2->index_yasha->index_html;
+
+	index->serial[label="number=1\ntypes=[femb,asic]"];
+
+	serial->serial_json->serial;
+	serial_json->serial_yasha->serial_html;
+	serial_html_js->serial_yasha;
+	
+}

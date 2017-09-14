@@ -6,8 +6,9 @@ electronics testing data.  It's not meant to make sense to anyone.
 Pretty much this must run on =hothstor2=.
 
 #+BEGIN_EXAMPLE
-  $ virtualenv --system-site-packages -p python2 venv
+  $ virtualenv --system-site-packages -p python3 venv
   $ pip install -r requirements.txt 
+  $ pip install -e .
 
   $ ln -s /dsk/1/data/sync-json $HOME/public_html/data
   $ ./waf configure --prefix=$HOME/public_html/summary

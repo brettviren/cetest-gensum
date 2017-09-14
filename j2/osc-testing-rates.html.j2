@@ -1,3 +1,4 @@
+{% set reltoroot = '..' %}
 {% include 'header.html.j2' %}
 
 <h1>Number of Oscillator tests per day</h1>
@@ -35,7 +36,7 @@ test is aborted, all four chips are counted and likely retested.
 
 <script>
   $(function () {
-    $.getJSON('testing-rate.json', function (plot) {
+    $.getJSON('testing-rates.json', function (plot) {
       Highcharts.chart('osctested', plot.tested);
       Highcharts.chart('oscpassed', plot.passed);
       Highcharts.chart('oscfailed', plot.failed);

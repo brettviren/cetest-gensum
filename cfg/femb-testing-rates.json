@@ -1,0 +1,45 @@
+{
+   "chart": {
+      "type": "column",
+      "zoomType": "x"
+   },
+   "plotOptions": {
+      "spline": {
+         "marker": {
+            "enabled": true
+         }
+      }
+   },
+   "series": [ ],
+   "subtitle": {
+      "text": "Counts completed tests, including retests."
+   },
+   "title": {
+      "text": "FEMB tests per day"
+   },
+   "tooltip": {
+      "headerFormat": "<b>{series.name}</b><br>",
+      "pointFormat": "{point.x:%e. %b}: {point.y:.0f}"
+   },
+   "xAxis": {
+      "dateTimeLabelFormats": {
+         "day": "%Y/%m/%d",
+         "hour": "%Y/%m/%d",
+         "minute": "%Y/%m/%d",
+         "month": "%Y/%m/%d",
+         "second": "%Y/%m/%d",
+         "week": "%Y/%m/%d",
+         "year": "%Y/%m/%d"
+      },
+      "title": {
+         "text": "Date"
+      },
+      "type": "datetime"
+   },
+   "yAxis": {
+      "min": 0,
+      "title": {
+         "text": "Tests performed per day"
+      }
+   }
+}

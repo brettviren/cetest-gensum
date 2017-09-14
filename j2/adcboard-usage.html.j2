@@ -1,0 +1,53 @@
+{% set reltoroot = '..' %}
+{% include 'header.html.j2' %}
+
+<h1>ADC ASIC tests board usage</h1>
+
+The plot below gives the number of tests performed for each ADC ASIC
+test board broken down by board "version".  Version number is
+incremented each time a socket is replaced.  
+
+<h2>Completed Tests</h2>
+
+<div id="board-usage-completed" style="width:100%; height:400px;"></div>
+
+<h2>Aborted Tests</h2>
+<div id="board-usage-aborted" style="width:100%; height:400px;"></div>
+
+  
+
+<script>
+  $(function () {
+    $.getJSON('usage.json', function (plot) {
+        // dumb JS programmer says what?
+
+	plot.completed.plotOptions.series = {
+	    cursor: 'pointer',
+	    point: {
+		events: {
+		    click: function() {
+			location.href = this.options.url;
+		    }
+		}
+	    }
+	};
+	plot.aborted.plotOptions.series = {
+	    cursor: 'pointer',
+	    point: {
+		events: {
+		    click: function() {
+			location.href = this.options.url;
+		    }
+		}
+	    }
+	};
+
+	Highcharts.chart('board-usage-completed', plot.completed);
+
+	Highcharts.chart('board-usage-aborted', plot.aborted);
+    });
+  });
+</script>
+  
+{% include 'footer.html.j2' %}
+    

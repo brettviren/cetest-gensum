@@ -1,3 +1,5 @@
+{% set reltoroot = '../../..' %}
+
 {% include 'header.html.j2' %}
     
 <script type="text/javascript" class="init">
@@ -6,13 +8,11 @@
   } );
   </script>
 
-{% set base = feasic.check_setup.params -%}
-
-<h1>FE ASIC Test Summary using test board# {{ base.boardid }} on {{ base.timestamp }}</h1>
+<h1>FE ASIC Test Summary using test board# {{ fe_testboard_id }} on {{ timestamp }}</h1>
 
 <!-- fixme: most of these should be made links to other things -->
 <ul>
-  <li>FE ASICS ID#s in this test: {% for fe in [base.asic0id, base.asic1id, base.asic2id, base.asic3id] -%}<a href="{{ reltoroot }}/feid/{{fe }}/">{{ fe }}</a> {%endfor-%}</li>
+  <li>FE ASICS ID#s in this test: {% for fe in fe_ids -%}<a href="{{ reltoroot }}/feid/{{ fe }}/">[{{ fe }}]</a> {%endfor-%}</li>
   <li><a href="http://localhost:8942/feasic/{{ label }}/">Sumatra entry</a> (requires local Sumatra server or SSH tunnel)</li>
 
 </ul>
@@ -26,29 +26,37 @@
       <th>gain</th>
       <th>shape</th>
       <th>base</th>
-      <th>FE# {{ base.asic0id }}</th>
-      <th>FE# {{ base.asic1id }}</th>
-      <th>FE# {{ base.asic2id }}</th>
-      <th>FE# {{ base.asic3id }}</th>
+      <th>failed chans</th>
+      <th>FE# {{ fe_ids[0] }}</th>
+      <th>FE# {{ fe_ids[1] }}</th>
+      <th>FE# {{ fe_ids[2] }}</th>
+      <th>FE# {{ fe_ids[3] }}</th>
+      <th>figures</th>
     </tr>
   </thead>
   <tbody>
-{% for name, dat in feasic.items() -%}
-{% set par = dat.params -%}
-{% if dat.results and dat.results.results -%}
-{%   set res = dat.results -%}
+    {% for name, res in results.items() -%}
     <tr>
-      <td><a href="{{ par.outlabel }}-summaryPlot.png">{{ par.outlabel }}</a></td>
-      <td>{{ res.config_gain }}</td>
-      <td>{{ res.config_shape }}</td>
-      <td>{{ res.config_base }}</td>
-      <td>{{ res.results[0].fail == "0" }}</td>
-      <td>{{ res.results[1].fail == "0" }}</td>
-      <td>{{ res.results[2].fail == "0" }}</td>
-      <td>{{ res.results[3].fail == "0" }}</td>
+      <td>{{ name }}</td>
+      <td>{{ res.gain }}</td>
+      <td>{{ res.shape }}</td>
+      <td>{{ res.base }}</td>
+      {% if res.chan_fail == undefined -%}
+      <td>n/a</td>
+      <td>n/a</td>
+      <td>n/a</td>
+      <td>n/a</td>
+      <td>n/a</td>
+      {% else -%}
+      <td>{{ res.chan_fail }}</td>
+      <td>{{ res.asic_passfail[0] }}</td>
+      <td>{{ res.asic_passfail[1] }}</td>
+      <td>{{ res.asic_passfail[2] }}</td>
+      <td>{{ res.asic_passfail[3] }}</td>
+      {% endif -%}
+      <td>{% for png in res.pngs -%}<a href="{{ png }}">[PNG]</a>{% endfor -%}</td>
     </tr>
-{%   endif -%}
-{% endfor -%}
+    {% endfor -%}
   </tbody>
 </table>
 

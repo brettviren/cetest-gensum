@@ -1,4 +1,7 @@
+{% set reltoroot = '..' %}
+
 {% include 'header.html.j2' %}
+
 
 <script type="text/javascript" class="init">
   $(document).ready(function() {
@@ -14,23 +17,23 @@
     <tr>
       <th>Box-FM-AM</th>
       <th>Timestamp</th>
-      <th>ADC ASICS</th>
-      <th>FE ASICS</th>
+      <th>ADC ASIC IDs</th>
+      <th>FE ASIC IDs</th>
       <th>Config</th>
       <th>DAQ host</th>
       <th>Code version</th>
     </tr>
   </thead>
   <tbody>
-    {% for one in index %}
+    {% for name, one in index.items() %}
     <tr>
-      <td><a href="{{ reltoroot }}/femb/femb-{{ one.serial }}">{{ one.serial }}</a></td>
-      <td><a href="{{ reltoroot }}/femb/femb-{{ one.serial }}/{{ one.timestamp }}">{{ one.timestamp }}</a></td>
-      <td>{% for adc in one.adc_asics -%}<a href="{{ reltoroot }}/adcid/{{ adc }}">[{{ adc }}]</a> {% endfor -%}</td>
-      <td>{% for fe  in one.fe_asics  -%}<a href="{{ reltoroot }}/feid/{{ fe }}">[{{ fe }}]</a> {% endfor -%}</td>
+      <td><a href="{{ one.serial }}">{{ one.serial }}</a></td>
+      <td><a href="{{ one.serial }}/{{ one.timestamp }}">{{ one.timestamp }}</a></td>
+      <td>{% for adc in one.adc_ids -%}<a href="{{ reltoroot }}/adcid/{{ adc }}">[{{ adc }}]</a> {% endfor -%}</td>
+      <td>{% for fe  in one.fe_ids  -%}<a href="{{ reltoroot }}/feid/{{ fe }}">[{{ fe }}]</a> {% endfor -%}</td>
       <td>{{ one.femb_config }}</td>
       <td>{{ one.hostname }}</td>
-      <td>{{ one.version }}</td>
+      <td><a href="https://github.com/DUNE/femb_python/releases/tag/{{ one.version }}">{{ one.version }}</a></td>
     </tr>
     {% endfor %}
   </tbody>

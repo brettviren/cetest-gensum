@@ -1,0 +1,70 @@
+{% set reltoroot = '../..' %}
+{% include 'header.html.j2' %}
+    
+<script type="text/javascript" class="init">
+  $(document).ready(function() {
+  $('#summary').DataTable();
+  } );
+  </script>
+
+<h1>All test results involving FE# {{ serial }}</h1>
+
+<h2>Notes</h2>
+
+The results table below includes all tests in which FE# {{ serial }} participated.  The meaning of <b>Board ID</b> depends on the test:
+
+<ul>
+  <li><b>feasic</b> the FE ASIC test board ID</li>
+  <li><b>femb</b> the FE motherboard ID</li>  
+</ul>
+
+Board ID links go to a directory of all results in which that board
+particpated.  Timestamp links go to a specific result.
+
+<h2>Results</h2>
+
+<table id="summary" class="display" width="100%" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Board ID</th>
+      <th>timestamp</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for one in index -%}
+    {% if one.category == "feasic" -%}
+    <tr>
+      <td>feasic</td>
+      <td><a href="{{ reltoroot }}/feasic/{{ one.serial }}">{{ one.serial }}</a></td>
+      <td><a href="{{ reltoroot }}/feasic/{{ one.serial }}/{{ one.timestamp }}">{{ one.timestamp }}</a></td>
+    </tr>
+    {% endif -%}
+    {% if one.category == "femb" -%}
+    <tr>
+      <td>femb</td>
+      <td><a href="{{ reltoroot }}/femb/{{ one.serial }}">{{ one.serial }}</a></td>
+      <td><a href="{{ reltoroot }}/femb/{{ one.serial }}/{{ one.timestamp }}">{{ one.timestamp }}</a></td>
+    </tr>
+    {% endif -%}
+    {% endfor -%}
+  </tbody>
+</table>
+
+<h2>Dump</h2>
+
+{% for one in index -%}
+{{ one.keys() }}
+
+category: {{ one.category }}
+
+serial: {{ one.serial }}
+
+<p>
+  {% endfor -%}
+
+<p>
+{{ index }}
+  
+{% include 'footer.html.j2' %}
+    
