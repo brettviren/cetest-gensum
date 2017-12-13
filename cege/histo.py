@@ -82,6 +82,54 @@ def _board_sorter(x):
     return v
 
 
+def divine_board_version(board_id):
+    '''Shift workers are very creative in mispelling board IDs.  They are
+    supposed to be either just an integer or two integers separated by
+    "v".
+
+    Some examples of broken board IDs are:
+
+    d10v3
+    vv7
+
+    This function does not try to guess the intention of the shifter.
+
+    It returns a pair of integers (bid,ver).  A negative bid means the
+    expected spelling was violated.  Version is zero unless
+    successfully determined.
+
+    '''
+    bid = -1
+    ver = 0
+
+    if not board_id:
+        return bid,ver
+
+    if board_id[0] not in "0123456789":
+        return bid,ver
+
+    # try as XX[vY]
+    parts = board_id.lower().split("v")
+    if 1 == len(parts):
+        try:
+            bid = int(parts[0])
+        except ValueError:
+            pass
+        else:
+            return bid,ver
+
+    if 2 == len(parts):
+        try:
+            bid = int(parts[0])
+            ver = int(parts[1])
+        except ValueError:
+            pass
+        else:
+            return bid,ver
+    return bid,ver
+
+
+
 def to_stack(data, cold=True, clickable = True, completed=True):
     assert(data)
 
@@ -99,15 +147,7 @@ def to_stack(data, cold=True, clickable = True, completed=True):
 
         board_id = one['board_id'].lower()
 
-        bid=None
-        iver=0
-        try:
-            bid = int(board_id)
-        except ValueError:
-            if 'v' in board_id:          # 10v2
-                bid,iver = map(int, board_id.split('v'))
-            else:               # probably "bogus"
-                bid = -1
+        bid,iver = divine_board_version(board_id)
 
         counts[(bid,iver)] += 1
         boards.add(bid)
