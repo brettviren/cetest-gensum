@@ -11,7 +11,7 @@
 {% if serial == "bogus" -%}
 <h1>Summary for bogus FEMB serial number </h1>
 {% else -%}
-<h1>Summary of FEMB Test on box:{{ box_ids[0] }} fm:{{ fm_ids[0] }} am:{{ am_ids[0] }} at {{ timestamp }}</h1>
+<h1>Summary of FEMB Test on box:{{ box_ids }} fm:{{ fm_ids }} am:{{ am_ids }} at {{ timestamp }}</h1>
 {% endif -%}
 
 <!-- fixme: most of these should be made links to other things -->
