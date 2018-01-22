@@ -32,8 +32,12 @@ def summarize(seed_path):
 
     ret['label'] = smt_labels.get(ts, None)
 
-    ret['board_id'] = raw.fix_board_id(seed['board_id'])
-    assert "V" not in ret['board_id'], ret['board_id'] # should be lower case
+    board_id  = raw.fix_board_id(seed['board_id'])
+    assert "V" not in board_id, board_id # should be lower case
+
+    if "v" not in board_id: # annoying users.  see comments in histo
+        board_id += "v0"
+    ret['board_id'] = board_id
 
     parent = os.path.dirname(seed_path)
     ret['datadir'] = parent

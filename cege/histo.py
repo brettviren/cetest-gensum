@@ -171,9 +171,16 @@ def to_stack(data, cold=True, clickable = True, completed=True):
     series = list()
     for iver in versions:
         sver = "v%d" % iver
-        fver = ""               # preserve original dumbness
-        if iver > 0:
-            fver = "v%d" % iver
+
+        ## Originally, version 0 had no "v0" but later it did and
+        ## despite having the following code to keep consistency, the
+        ## users managed to reverse their convention.  
+        #fver = ""
+        #if iver > 0:
+        #    fver = "v%d" % iver
+        ## 
+        ## So, now we force a "v0" instead forcing no v0.  Clear?
+        fver = "v%d" % iver
 
         point_data = list()
         for bid,sbid in zip(boards,sboards):
